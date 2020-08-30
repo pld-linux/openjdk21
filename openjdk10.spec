@@ -2,9 +2,9 @@
 %bcond_without	cacerts		# don't include the default CA certificates
 
 %if %{with bootstrap}
-%define		use_jdk	icedtea8
-%else
 %define		use_jdk	openjdk9
+%else
+%define		use_jdk	openjdk10
 %endif
 
 %ifarch %{x8664}
@@ -12,42 +12,26 @@
 %endif
 
 # class data version seen with file(1) that this jvm is able to load
-%define		_classdataversion 53.0
+%define		_classdataversion 54.0
 
-%define	ver_u	9.0.4
-%define	ver_b	12
-
-# JDK/JRE version, as returned with `java -version`, '_' replaced with '.'
-%define		_jdkversion %{ver_u}
+%define	ver_u	10.0.2
+%define	ver_b	13
 
 Summary:	Open-source implementation of the Java Platform, Standard Edition
-Summary(pl.UTF-8):	Wolnoźródłowa implementacja Java 9 SE
-Name:		openjdk9
+Summary(pl.UTF-8):	Wolnoźródłowa implementacja Java 10 SE
+Name:		openjdk10
 Version:	%{ver_u}.%{ver_b}
 Release:	1
 License:	GPL v2
 Group:		Development/Languages/Java
-Source0:	https://hg.openjdk.java.net/jdk-updates/jdk9u/archive/jdk-%{ver_u}+%{ver_b}.tar.bz2?/%{name}-%{version}.tar.bz2
-# Source0-md5:	f71280d31603efeffdadea56fab8436e
-Source1:	https://hg.openjdk.java.net/jdk-updates/jdk9u/corba/archive/jdk-%{ver_u}+%{ver_b}.tar.bz2?/%{name}-corba-%{version}.tar.bz2
-# Source1-md5:	2bc0a490f71eaa17fcae9387b354ccfd
-Source2:	https://hg.openjdk.java.net/jdk-updates/jdk9u/hotspot/archive/jdk-%{ver_u}+%{ver_b}.tar.bz2?/%{name}-hotspot-%{version}.tar.bz2
-# Source2-md5:	37ff0144a673417c793d282d12aba6a1
-Source3:	https://hg.openjdk.java.net/jdk-updates/jdk9u/jaxp/archive/jdk-%{ver_u}+%{ver_b}.tar.bz2?/%{name}-jaxp-%{version}.tar.bz2
-# Source3-md5:	c6c4ee8ef80f10fc4fbc9d151436c89a
-Source4:	https://hg.openjdk.java.net/jdk-updates/jdk9u/jaxws/archive/jdk-%{ver_u}+%{ver_b}.tar.bz2?/%{name}-jaxws-%{version}.tar.bz2
-# Source4-md5:	3cf0375c3bba7d028c8408e41bbbb352
-Source5:	https://hg.openjdk.java.net/jdk-updates/jdk9u/jdk/archive/jdk-%{ver_u}+%{ver_b}.tar.bz2?/%{name}-jdk-%{version}.tar.bz2
-# Source5-md5:	74d33ad39f5b67596c5269585811cfab
-Source6:	https://hg.openjdk.java.net/jdk-updates/jdk9u/langtools/archive/jdk-%{ver_u}+%{ver_b}.tar.bz2?/%{name}-langtools-%{version}.tar.bz2
-# Source6-md5:	95d7011a050602218b5400c632339e2c
-Source7:	https://hg.openjdk.java.net/jdk-updates/jdk9u/nashorn/archive/jdk-%{ver_u}+%{ver_b}.tar.bz2?/%{name}-nashorn-%{version}.tar.bz2
-# Source7-md5:	5fbaceceb82449806263ba99188b7139
+Source0:	https://hg.openjdk.java.net/jdk-updates/jdk10u/archive/jdk-%{ver_u}+%{ver_b}.tar.bz2?/%{name}-%{version}.tar.bz2
+# Source0-md5:	d216524203251f1378e660e6fda0b2ec
 Source10:	make-cacerts.sh
 Patch0:		libpath.patch
 Patch1:		make-4.3.patch
 Patch2:		x32.patch
 Patch3:		aarch64.patch
+Patch4:		build.patch
 URL:		http://openjdk.java.net/
 BuildRequires:	/usr/bin/jar
 BuildRequires:	alsa-lib-devel
@@ -83,7 +67,6 @@ BuildRequires:	zip
 BuildRequires:	zlib-devel
 Requires:	%{name}-appletviewer = %{version}-%{release}
 Requires:	%{name}-jdk = %{version}-%{release}
-Suggests:	%{name}-jre-X11
 Suggests:	icedtea-web
 Obsoletes:	icedtea6
 Obsoletes:	icedtea7
@@ -140,8 +123,8 @@ Group:		Development/Languages/Java
 Requires:	%{name}-jar = %{version}-%{release}
 Requires:	%{name}-jdk-base = %{version}-%{release}
 Requires:	%{name}-jre = %{version}-%{release}
-Provides:	j2sdk = %{_jdkversion}
-Provides:	jdk = %{_jdkversion}
+Provides:	j2sdk = %{version}
+Provides:	jdk = %{version}
 Obsoletes:	blackdown-java-sdk
 Obsoletes:	ibm-java
 Obsoletes:	icedtea6-jdk
@@ -200,7 +183,7 @@ Provides:	java(jmx) = 1.4
 Provides:	java(jndi) = %{version}
 Provides:	java(jsse) = %{version}
 Provides:	java1.4
-Provides:	jre = %{_jdkversion}
+Provides:	jre = %{version}
 Obsoletes:	icedtea6-jre
 Obsoletes:	icedtea7-jre
 Obsoletes:	java(jaas)
@@ -228,26 +211,6 @@ Ten pakiet tworzy symboliczne dowiązania do środowiska
 uruchomieniowego OpenJDK, dostarczanych przez pakiet %{name}-jre-base,
 w standardowych systemowych ścieżkach takich jak %{_bindir},
 sprawiając tym samym, że OpenJDK staje się domyślnym JRE w systemie.
-
-%package jre-X11
-Summary:	OpenJDK - runtime environment - X11 support
-Summary(pl.UTF-8):	OpenJDK - środowisko uruchomieniowe - obsługa X11
-Group:		Development/Languages/Java
-Requires:	%{name}-jre = %{version}-%{release}
-Requires:	%{name}-jre-base-X11 = %{version}-%{release}
-Provides:	jre-X11 = %{_jdkversion}
-Obsoletes:	icedtea6-jre-X11
-Obsoletes:	icedtea7-jre-X11
-Obsoletes:	java-sun-jre-X11
-Obsoletes:	oracle-java7-jre-X11
-
-%description jre-X11
-X11 support for OpenJDK runtime environment built using free software
-only.
-
-%description jre-X11 -l pl.UTF-8
-Biblioteki X11 dla środowiska OpenJDK zbudowany wyłocznie przy uzyciu
-wolnego oprogramowania.
 
 %package jre-base
 Summary:	OpenJDK - runtime environment
@@ -347,7 +310,6 @@ Summary:	OpenJDK - appletviewer tool
 Summary(pl.UTF-8):	OpenJDK - narzędzie appletviewer
 Group:		Development/Languages/Java
 Requires:	%{name}-jdk-base = %{version}-%{release}
-Requires:	%{name}-jre-X11 = %{version}-%{release}
 Obsoletes:	icedtea6-appletviewer
 Obsoletes:	icedtea7-appletviewer
 Obsoletes:	java-sun-appletviewer
@@ -391,11 +353,7 @@ Code examples for OpenJDK.
 Przykłady dla OpenJDK.
 
 %prep
-%setup -qn jdk9u-jdk-%{ver_u}+%{ver_b} -a1 -a2 -a3 -a4 -a5 -a6 -a7
-
-for d in *-jdk-%{ver_u}+%{ver_b}* ; do
-	mv "$d" "${d%%-jdk-%{ver_u}+%{ver_b}}"
-done
+%setup -qn jdk10u-jdk-%{ver_u}+%{ver_b}
 
 %patch0 -p1
 %patch1 -p1
@@ -403,6 +361,7 @@ done
 %ifarch aarch64
 %patch3 -p1
 %endif
+%patch4 -p1
 
 %build
 # Make sure we have /proc mounted - otherwise idlc will fail later.
@@ -411,7 +370,7 @@ if [ ! -f /proc/self/stat ]; then
 	exit 1
 fi
 
-cd common/autoconf
+cd make/autoconf
 rm generated-configure.sh
 %{__autoconf} -o generated-configure.sh
 cd ../..
@@ -446,7 +405,12 @@ chmod a+x configure
 	--with-zlib=system \
 	--with-version-pre="" \
 	--with-version-opt="" \
-	--with-version-build="%{release}"
+	--with-version-build="%{release}" \
+	--with-vendor-name="PLD-Linux" \
+	--with-vendor-url="https://www.pld-linux.org" \
+	--with-vendor-bug-url="https://bugs.pld-linux.org" \
+	--with-vendor-vm-bug-url="https://bugs.openjdk.java.net" \
+	--with-vendor-version-string="%{version}"
 
 specdir="$(dirname build/*-release/spec.gmk)"
 cat > $specdir/custom-spec.gmk <<EOF
@@ -524,7 +488,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/jarsigner
 %attr(755,root,root) %{_bindir}/javac
 %attr(755,root,root) %{_bindir}/javadoc
-%attr(755,root,root) %{_bindir}/javah
 %attr(755,root,root) %{_bindir}/javap
 %attr(755,root,root) %{_bindir}/jcmd
 %attr(755,root,root) %{_bindir}/jconsole
@@ -552,7 +515,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/jarsigner.1*
 %{_mandir}/man1/javac.1*
 %{_mandir}/man1/javadoc.1*
-%{_mandir}/man1/javah.1*
 %{_mandir}/man1/javap.1*
 %{_mandir}/man1/jcmd.1*
 %{_mandir}/man1/jconsole.1*
@@ -573,7 +535,6 @@ rm -rf $RPM_BUILD_ROOT
 %lang(ja) %{_mandir}/ja/man1/jarsigner.1*
 %lang(ja) %{_mandir}/ja/man1/javac.1*
 %lang(ja) %{_mandir}/ja/man1/javadoc.1*
-%lang(ja) %{_mandir}/ja/man1/javah.1*
 %lang(ja) %{_mandir}/ja/man1/javap.1*
 %lang(ja) %{_mandir}/ja/man1/jcmd.1*
 %lang(ja) %{_mandir}/ja/man1/jconsole.1*
@@ -602,7 +563,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{dstdir}/bin/jarsigner
 %attr(755,root,root) %{dstdir}/bin/javac
 %attr(755,root,root) %{dstdir}/bin/javadoc
-%attr(755,root,root) %{dstdir}/bin/javah
 %attr(755,root,root) %{dstdir}/bin/javap
 %attr(755,root,root) %{dstdir}/bin/jconsole
 %attr(755,root,root) %{dstdir}/bin/jcmd
@@ -628,7 +588,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{dstdir}/bin/xjc
 %{dstdir}/include
 %{dstdir}/jmods
-%{?with_aot:%attr(755,root,root) %{dstdir}/lib/libjelfshim.so}
 %{dstdir}/lib/ct.sym
 
 %files jre
@@ -706,6 +665,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{dstdir}/lib/libawt.so
 %attr(755,root,root) %{dstdir}/lib/libawt_headless.so
 %attr(755,root,root) %{dstdir}/lib/libdt_socket.so
+%attr(755,root,root) %{dstdir}/lib/libextnet.so
 %attr(755,root,root) %{dstdir}/lib/libinstrument.so
 %attr(755,root,root) %{dstdir}/lib/libj2gss.so
 %attr(755,root,root) %{dstdir}/lib/libj2pcsc.so
@@ -742,15 +702,8 @@ rm -rf $RPM_BUILD_ROOT
 %{dstdir}/lib/tzdb.dat
 %{jvmjardir}
 
-%files jre-X11
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_bindir}/policytool
-%{_mandir}/man1/policytool.1*
-%lang(ja) %{_mandir}/ja/man1/policytool.1*
-
 %files jre-base-X11
 %defattr(644,root,root,755)
-%attr(755,root,root) %{dstdir}/bin/policytool
 %attr(755,root,root) %{dstdir}/lib/libsplashscreen.so
 %attr(755,root,root) %{dstdir}/lib/libawt_xawt.so
 %attr(755,root,root) %{dstdir}/lib/libjawt.so
