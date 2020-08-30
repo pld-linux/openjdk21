@@ -2,36 +2,30 @@
 %bcond_without	cacerts		# don't include the default CA certificates
 
 %if %{with bootstrap}
-%define		use_jdk	openjdk9
-%else
 %define		use_jdk	openjdk10
+%else
+%define		use_jdk	openjdk11
 %endif
 
-%ifarch %{x8664}
+%ifarch %{x8664} aarch64
 %define		with_aot	1
 %endif
 
 # class data version seen with file(1) that this jvm is able to load
-%define		_classdataversion 54.0
-
-%define	ver_u	10.0.2
-%define	ver_b	13
+%define		_classdataversion 55.0
 
 Summary:	Open-source implementation of the Java Platform, Standard Edition
-Summary(pl.UTF-8):	Wolnoźródłowa implementacja Java 10 SE
-Name:		openjdk10
-Version:	%{ver_u}.%{ver_b}
+Summary(pl.UTF-8):	Wolnoźródłowa implementacja Java 11 SE
+Name:		openjdk11
+Version:	11.0.8
 Release:	1
 License:	GPL v2
 Group:		Development/Languages/Java
-Source0:	https://hg.openjdk.java.net/jdk-updates/jdk10u/archive/jdk-%{ver_u}+%{ver_b}.tar.bz2?/%{name}-%{version}.tar.bz2
-# Source0-md5:	d216524203251f1378e660e6fda0b2ec
+Source0:	https://hg.openjdk.java.net/jdk-updates/jdk11u/archive/jdk-%{version}-ga.tar.bz2?/%{name}-%{version}.tar.bz2
+# Source0-md5:	b744f3c158334221e1f1161e591f2cb9
 Source10:	make-cacerts.sh
 Patch0:		libpath.patch
-Patch1:		make-4.3.patch
-Patch2:		x32.patch
-Patch3:		aarch64.patch
-Patch4:		build.patch
+Patch1:		x32.patch
 URL:		http://openjdk.java.net/
 BuildRequires:	/usr/bin/jar
 BuildRequires:	alsa-lib-devel
@@ -65,7 +59,6 @@ BuildRequires:	xorg-proto-printproto-devel
 BuildRequires:	xorg-proto-xproto-devel
 BuildRequires:	zip
 BuildRequires:	zlib-devel
-Requires:	%{name}-appletviewer = %{version}-%{release}
 Requires:	%{name}-jdk = %{version}-%{release}
 Suggests:	icedtea-web
 Obsoletes:	icedtea6
@@ -241,20 +234,6 @@ only.
 Biblioteki X11 dla środowiska OpenJDK zbudowany wyłocznie przy uzyciu
 wolnego oprogramowania.
 
-%package jre-base-alsa
-Summary:	OpenJDK - runtime environment - ALSA support
-Summary(pl.UTF-8):	OpenJDK - środowisko uruchomieniowe - obsługa ALSA
-Group:		Development/Languages/Java
-Requires:	%{name}-jre-base = %{version}-%{release}
-
-%description jre-base-alsa
-ALSA sound support for OpenJDK runtime environment build using free
-software only.
-
-%description jre-base-alsa -l pl.UTF-8
-Biblioteki ALSA rozszerzające środowisko OpenJDK o obsługę dźwięku
-zbudowane przy uzyciu wyłącznie wolnego oprogramowania.
-
 %package jre-base-freetype
 Summary:	OpenJDK - runtime environment - font support
 Summary(pl.UTF-8):	OpenJDK - środowisko uruchomieniowe - obsługa fontów
@@ -305,24 +284,6 @@ JAR jest narzędziem pozwalającym wykonywać podstawowe operacje na
 archiwach javy .jar takie jak na przykład tworzenie lub rozpakowywanie
 archiwów.
 
-%package appletviewer
-Summary:	OpenJDK - appletviewer tool
-Summary(pl.UTF-8):	OpenJDK - narzędzie appletviewer
-Group:		Development/Languages/Java
-Requires:	%{name}-jdk-base = %{version}-%{release}
-Obsoletes:	icedtea6-appletviewer
-Obsoletes:	icedtea7-appletviewer
-Obsoletes:	java-sun-appletviewer
-Obsoletes:	oracle-java7-appletviewer
-
-%description appletviewer
-Appletviewer from OpenJDK build using free software only.
-
-%description appletviewer -l pl.UTF-8
-Appletviewer pozwala uruchamiać aplety javy niezależnie od
-przeglądarki www. Ten appletviewer pochodzi z zestawu narzędzi OpenJDK
-i został zbudowany wyłącznie przy użyciu wolnego oprogramowania.
-
 %package jdk-sources
 Summary:	OpenJDK - sources
 Summary(pl.UTF-8):	OpenJDK - kod źródłowy
@@ -353,15 +314,10 @@ Code examples for OpenJDK.
 Przykłady dla OpenJDK.
 
 %prep
-%setup -qn jdk10u-jdk-%{ver_u}+%{ver_b}
+%setup -qn jdk11u-jdk-%{version}-ga
 
 %patch0 -p1
 %patch1 -p1
-%patch2 -p1
-%ifarch aarch64
-%patch3 -p1
-%endif
-%patch4 -p1
 
 %build
 # Make sure we have /proc mounted - otherwise idlc will fail later.
@@ -371,7 +327,6 @@ if [ ! -f /proc/self/stat ]; then
 fi
 
 cd make/autoconf
-rm generated-configure.sh
 %{__autoconf} -o generated-configure.sh
 cd ../..
 
@@ -506,11 +461,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/jstat
 %attr(755,root,root) %{_bindir}/jstatd
 %attr(755,root,root) %{_bindir}/rmic
-%attr(755,root,root) %{_bindir}/schemagen
 %attr(755,root,root) %{_bindir}/serialver
-%attr(755,root,root) %{_bindir}/wsgen
-%attr(755,root,root) %{_bindir}/wsimport
-%attr(755,root,root) %{_bindir}/xjc
 %{_jvmdir}/java
 %{_mandir}/man1/jarsigner.1*
 %{_mandir}/man1/javac.1*
@@ -526,12 +477,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/jstack.1*
 %{_mandir}/man1/jstat.1*
 %{_mandir}/man1/jstatd.1*
-%{_mandir}/man1/schemagen.1*
 %{_mandir}/man1/serialver.1*
 %{_mandir}/man1/rmic.1*
-%{_mandir}/man1/wsgen.1*
-%{_mandir}/man1/wsimport.1*
-%{_mandir}/man1/xjc.1*
 %lang(ja) %{_mandir}/ja/man1/jarsigner.1*
 %lang(ja) %{_mandir}/ja/man1/javac.1*
 %lang(ja) %{_mandir}/ja/man1/javadoc.1*
@@ -546,18 +493,13 @@ rm -rf $RPM_BUILD_ROOT
 %lang(ja) %{_mandir}/ja/man1/jstack.1*
 %lang(ja) %{_mandir}/ja/man1/jstat.1*
 %lang(ja) %{_mandir}/ja/man1/jstatd.1*
-%lang(ja) %{_mandir}/ja/man1/schemagen.1*
 %lang(ja) %{_mandir}/ja/man1/serialver.1*
 %lang(ja) %{_mandir}/ja/man1/rmic.1*
-%lang(ja) %{_mandir}/ja/man1/wsgen.1*
-%lang(ja) %{_mandir}/ja/man1/wsimport.1*
-%lang(ja) %{_mandir}/ja/man1/xjc.1*
 
 %files jdk-base
 %defattr(644,root,root,755)
 %dir %{dstdir}
 %{_jvmdir}/%{name}
-%attr(755,root,root) %{dstdir}/bin/appletviewer
 %{?with_aot:%attr(755,root,root) %{dstdir}/bin/jaotc}
 %attr(755,root,root) %{dstdir}/bin/jar
 %attr(755,root,root) %{dstdir}/bin/jarsigner
@@ -581,52 +523,37 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{dstdir}/bin/jstat
 %attr(755,root,root) %{dstdir}/bin/jstatd
 %attr(755,root,root) %{dstdir}/bin/rmic
-%attr(755,root,root) %{dstdir}/bin/schemagen
 %attr(755,root,root) %{dstdir}/bin/serialver
-%attr(755,root,root) %{dstdir}/bin/wsgen
-%attr(755,root,root) %{dstdir}/bin/wsimport
-%attr(755,root,root) %{dstdir}/bin/xjc
 %{dstdir}/include
 %{dstdir}/jmods
 %{dstdir}/lib/ct.sym
 
 %files jre
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_bindir}/idlj
 %attr(755,root,root) %{_bindir}/java
+%attr(755,root,root) %{_bindir}/jfr
 %attr(755,root,root) %{_bindir}/jjs
 %attr(755,root,root) %{_bindir}/jrunscript
 %attr(755,root,root) %{_bindir}/keytool
-%attr(755,root,root) %{_bindir}/orbd
 %attr(755,root,root) %{_bindir}/pack200
 %attr(755,root,root) %{_bindir}/rmid
 %attr(755,root,root) %{_bindir}/rmiregistry
-%attr(755,root,root) %{_bindir}/servertool
-%attr(755,root,root) %{_bindir}/tnameserv
 %attr(755,root,root) %{_bindir}/unpack200
-%{_mandir}/man1/idlj.1*
 %{_mandir}/man1/java.1*
 %{_mandir}/man1/jjs.1*
 %{_mandir}/man1/jrunscript.1*
 %{_mandir}/man1/keytool.1*
-%{_mandir}/man1/orbd.1*
 %{_mandir}/man1/pack200.1*
 %{_mandir}/man1/rmid.1*
 %{_mandir}/man1/rmiregistry.1*
-%{_mandir}/man1/servertool.1*
-%{_mandir}/man1/tnameserv.1*
 %{_mandir}/man1/unpack200.1*
-%lang(ja) %{_mandir}/ja/man1/idlj.1*
 %lang(ja) %{_mandir}/ja/man1/java.1*
 %lang(ja) %{_mandir}/ja/man1/jjs.1*
 %lang(ja) %{_mandir}/ja/man1/jrunscript.1*
 %lang(ja) %{_mandir}/ja/man1/keytool.1*
-%lang(ja) %{_mandir}/ja/man1/orbd.1*
 %lang(ja) %{_mandir}/ja/man1/pack200.1*
 %lang(ja) %{_mandir}/ja/man1/rmid.1*
 %lang(ja) %{_mandir}/ja/man1/rmiregistry.1*
-%lang(ja) %{_mandir}/ja/man1/servertool.1*
-%lang(ja) %{_mandir}/ja/man1/tnameserv.1*
 %lang(ja) %{_mandir}/ja/man1/unpack200.1*
 
 %files jre-base
@@ -637,21 +564,20 @@ rm -rf $RPM_BUILD_ROOT
 %{dstdir}/release
 %{_jvmdir}/%{name}-jre
 %dir %{dstdir}/bin
-%attr(755,root,root) %{dstdir}/bin/idlj
 %attr(755,root,root) %{dstdir}/bin/java
+%attr(755,root,root) %{dstdir}/bin/jfr
 %attr(755,root,root) %{dstdir}/bin/jjs
 %attr(755,root,root) %{dstdir}/bin/jrunscript
 %attr(755,root,root) %{dstdir}/bin/keytool
-%attr(755,root,root) %{dstdir}/bin/orbd
 %attr(755,root,root) %{dstdir}/bin/pack200
 %attr(755,root,root) %{dstdir}/bin/rmid
 %attr(755,root,root) %{dstdir}/bin/rmiregistry
-%attr(755,root,root) %{dstdir}/bin/servertool
-%attr(755,root,root) %{dstdir}/bin/tnameserv
 %attr(755,root,root) %{dstdir}/bin/unpack200
 %{dstdir}/conf
 %{dstdir}/legal
 %dir %{dstdir}/lib
+%dir %{dstdir}/lib/jfr
+%{dstdir}/lib/jfr/*.jfc
 %dir %{dstdir}/lib/jli
 %attr(755,root,root) %{dstdir}/lib/jli/libjli.so
 %{dstdir}/lib/security
@@ -670,7 +596,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{dstdir}/lib/libj2gss.so
 %attr(755,root,root) %{dstdir}/lib/libj2pcsc.so
 %attr(755,root,root) %{dstdir}/lib/libj2pkcs11.so
-%attr(755,root,root) %{dstdir}/lib/libjaas_unix.so
+%attr(755,root,root) %{dstdir}/lib/libjaas.so
 %attr(755,root,root) %{dstdir}/lib/libjava.so
 %attr(755,root,root) %{dstdir}/lib/libjimage.so
 %attr(755,root,root) %{dstdir}/lib/liblcms.so
@@ -696,6 +622,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{dstdir}/lib/libverify.so
 %attr(755,root,root) %{dstdir}/lib/libzip.so
 %attr(755,root,root) %{dstdir}/lib/jexec
+%attr(755,root,root) %{dstdir}/lib/jspawnhelper
 %{dstdir}/lib/modules
 %{dstdir}/lib/psfont.properties.ja
 %{dstdir}/lib/psfontj2d.properties
@@ -708,10 +635,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{dstdir}/lib/libawt_xawt.so
 %attr(755,root,root) %{dstdir}/lib/libjawt.so
 
-%files jre-base-alsa
-%defattr(644,root,root,755)
-%attr(755,root,root) %{dstdir}/lib/libjsoundalsa.so
-
 %files jre-base-freetype
 %defattr(644,root,root,755)
 %attr(755,root,root) %{dstdir}/lib/libfontmanager.so
@@ -721,12 +644,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/jar
 %{_mandir}/man1/jar.1*
 %lang(ja) %{_mandir}/ja/man1/jar.1*
-
-%files appletviewer
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_bindir}/appletviewer
-%{_mandir}/man1/appletviewer.1*
-%lang(ja) %{_mandir}/ja/man1/appletviewer.1*
 
 %files jdk-sources
 %defattr(644,root,root,755)

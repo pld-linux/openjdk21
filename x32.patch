@@ -68,21 +68,6 @@ diff -urN jdk9u-jdk-9.0.4+12.orig/src/hotspot/os/linux/os_linux.cpp jdk9u-jdk-9.
    static  Elf32_Half running_arch_code=EM_X86_64;
  #elif  (defined IA64)
    static  Elf32_Half running_arch_code=EM_IA_64;
-diff -urN jdk9u-jdk-9.0.4+12.orig/make/gensrc/GensrcX11Wrappers.gmk jdk9u-jdk-9.0.4+12/make/gensrc/GensrcX11Wrappers.gmk
---- jdk9u-jdk-9.0.4+12.orig/make/gensrc/GensrcX11Wrappers.gmk	2018-01-13 03:07:38.000000000 +0100
-+++ jdk9u-jdk-9.0.4+12/make/gensrc/GensrcX11Wrappers.gmk	2020-08-29 23:55:48.198473585 +0200
-@@ -87,9 +87,11 @@
- 	$(TOOL_WRAPPERGENERATOR) $(@D) $(GENSRC_SIZER_DIR)/xlibtypes.txt "sizer" $*
- 
-   # use -m32/-m64 only if the compiler supports it
-+  ifneq ($(OPENJDK_TARGET_CPU),x32)
-   ifeq ($(COMPILER_SUPPORTS_TARGET_BITS_FLAG), true)
-     MEMORY_MODEL_FLAG="$(COMPILER_TARGET_BITS_FLAG)$*"
-   endif
-+  endif
- 
-   SIZER_CFLAGS := \
-       -I$(JDK_TOPDIR)/src/java.base/share/native/include \
 diff -urN jdk9u-jdk-9.0.4+12.orig/src/jdk.pack/share/native/common-unpack/unpack.cpp jdk9u-jdk-9.0.4+12/src/jdk.pack/share/native/common-unpack/unpack.cpp
 --- jdk9u-jdk-9.0.4+12.orig/src/jdk.pack/share/native/common-unpack/unpack.cpp	2018-01-13 03:07:38.000000000 +0100
 +++ jdk9u-jdk-9.0.4+12/src/jdk.pack/share/native/common-unpack/unpack.cpp	2020-08-29 23:59:35.900292250 +0200
