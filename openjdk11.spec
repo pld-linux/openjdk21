@@ -21,12 +21,12 @@
 Summary:	Open-source implementation of the Java Platform, Standard Edition
 Summary(pl.UTF-8):	Wolnoźródłowa implementacja Java 11 SE
 Name:		openjdk11
-Version:	11.0.9.1
-Release:	2
+Version:	11.0.10
+Release:	1
 License:	GPL v2
 Group:		Development/Languages/Java
 Source0:	https://hg.openjdk.java.net/jdk-updates/jdk11u/archive/jdk-%{version}-ga.tar.bz2?/%{name}-%{version}.tar.bz2
-# Source0-md5:	689e99091a9da9a2eb18dbd8606aa046
+# Source0-md5:	f774f1513d25eaa6baa8edc584f96b36
 Source10:	make-cacerts.sh
 Patch0:		libpath.patch
 Patch1:		x32.patch
@@ -39,14 +39,15 @@ BuildRequires:	bash
 %{?with_cacerts:BuildRequires:	ca-certificates-update}
 BuildRequires:	cups-devel
 BuildRequires:	elfutils-devel
-BuildRequires:	freetype-devel >= 2.3
+BuildRequires:	freetype-devel >= 1:2.10.2
 BuildRequires:	gawk
-BuildRequires:	giflib-devel >= 5.1
+BuildRequires:	giflib-devel >= 5.2.1
 BuildRequires:	glibc-misc
+BuildRequires:	harfbuzz-devel >= 2.3.1
 %{?buildrequires_jdk}
-BuildRequires:	lcms2-devel
+BuildRequires:	lcms2-devel >= 2.11
 BuildRequires:	libjpeg-devel
-BuildRequires:	libpng-devel
+BuildRequires:	libpng-devel >= 2:1.6.37
 BuildRequires:	lsb-release
 BuildRequires:	pcsc-lite-devel
 BuildRequires:	pkgconfig
@@ -151,6 +152,7 @@ Summary(pl.UTF-8):	Kod OpenJDK - środowisko programistyczne
 Group:		Development/Languages/Java
 Requires:	%{name}-jre-base = %{version}-%{release}
 Requires:	jpackage-utils >= 0:1.7.5-8
+Requires:	lcms2 >= 2.11
 Provides:	jdk(%{name})
 
 %description jdk-base
@@ -229,6 +231,8 @@ Summary(pl.UTF-8):	OpenJDK - środowisko uruchomieniowe - obsługa X11
 Group:		Development/Languages/Java
 Requires:	%{name}-jre-base = %{version}-%{release}
 Requires:	%{name}-jre-base-freetype = %{version}-%{release}
+Requires:	giflib >= 5.2.1
+Requires:	libpng >= 2:1.6.37
 
 %description jre-base-X11
 X11 support for OpenJDK runtime environment built using free software
@@ -243,6 +247,8 @@ Summary:	OpenJDK - runtime environment - font support
 Summary(pl.UTF-8):	OpenJDK - środowisko uruchomieniowe - obsługa fontów
 Group:		Development/Languages/Java
 Requires:	%{name}-jre-base = %{version}-%{release}
+Requires:	freetype >= 1:2.10.2
+Requires:	harfbuzz >= 2.3.1
 
 %description jre-base-freetype
 Font handling library for OpenJDK runtime environment built using free
@@ -356,7 +362,9 @@ chmod a+x configure
 	--disable-hotspot-gtest \
 	--disable-warnings-as-errors \
 	--with-jobs="%{__jobs}" \
+	--with-freetype=system \
 	--with-giflib=system \
+	--with-harfbuzz=system \
 	--with-libjpeg=system \
 	--with-libpng=system \
 	--with-lcms=system \
