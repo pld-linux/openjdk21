@@ -51,7 +51,7 @@ BuildRequires:	libpng-devel >= 2:1.6.37
 BuildRequires:	lsb-release
 BuildRequires:	pcsc-lite-devel
 BuildRequires:	pkgconfig
-BuildRequires:	rpmbuild(macros) >= 1.557
+BuildRequires:	rpmbuild(macros) >= 1.752
 BuildRequires:	unzip
 BuildRequires:	util-linux
 BuildRequires:	xorg-lib-libX11-devel
@@ -298,9 +298,7 @@ archiwów.
 Summary:	OpenJDK - sources
 Summary(pl.UTF-8):	OpenJDK - kod źródłowy
 Group:		Documentation
-%if "%{_rpmversion}" >= "5"
-BuildArch:	noarch
-%endif
+%{?noarchpackage}
 
 %description jdk-sources
 Source code for the OpenJDK development kit and Java standard library.
@@ -313,9 +311,7 @@ biblioteki Javy.
 Summary:	OpenJDK - examples
 Summary(pl.UTF-8):	OpenJDK - przykłady
 Group:		Documentation
-%if "%{_rpmversion}" >= "5"
-BuildArch:	noarch
-%endif
+%{?noarchpackage}
 
 %description examples
 Code examples for OpenJDK.
