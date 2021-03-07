@@ -298,7 +298,7 @@ archiwów.
 Summary:	OpenJDK - sources
 Summary(pl.UTF-8):	OpenJDK - kod źródłowy
 Group:		Documentation
-%{?noarchpackage}
+BuildArch:	noarch
 
 %description jdk-sources
 Source code for the OpenJDK development kit and Java standard library.
@@ -311,7 +311,7 @@ biblioteki Javy.
 Summary:	OpenJDK - examples
 Summary(pl.UTF-8):	OpenJDK - przykłady
 Group:		Documentation
-%{?noarchpackage}
+BuildArch:	noarch
 
 %description examples
 Code examples for OpenJDK.
