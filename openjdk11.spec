@@ -15,6 +15,10 @@
 %define		with_zero	1
 %endif
 
+%ifarch %{ix86} %{x8664} aarch64
+%define		with_shenandoahgc	1
+%endif
+
 # class data version seen with file(1) that this jvm is able to load
 %define		_classdataversion 55.0
 
@@ -352,6 +356,7 @@ chmod a+x configure
 	--with-extra-cflags="%{rpmcppflags} %{rpmcflags} -fcommon -fno-tree-dse" \
 	--with-extra-cxxflags="%{rpmcppflags} %{rpmcxxflags} -fcommon -fno-tree-dse" \
 	--with-extra-ldflags="%{rpmldflags}" \
+	--with-jvm-features="%{?with_shenandoahgc:shenandoahgc}" \
 	--with-native-debug-symbols=none \
 	--disable-full-docs \
 	--disable-javac-server \
