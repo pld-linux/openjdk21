@@ -26,7 +26,7 @@ Summary:	Open-source implementation of the Java Platform, Standard Edition
 Summary(pl.UTF-8):	Wolnoźródłowa implementacja Java 11 SE
 Name:		openjdk11
 Version:	11.0.11
-Release:	1
+Release:	2
 License:	GPL v2
 Group:		Development/Languages/Java
 Source0:	https://hg.openjdk.java.net/jdk-updates/jdk11u/archive/jdk-%{version}-ga.tar.bz2?/%{name}-%{version}.tar.bz2
@@ -273,6 +273,18 @@ GTK support for OpenJDK runtime environment.
 
 %description jre-base-gtk -l pl.UTF-8
 Biblioteki GTK dla OpenJDK.
+
+%package jmods
+Summary:	OpenJDK - JMods
+Summary(pl.UTF-8):	OpenJDK - JMods
+Group:		Development/Languages/Java
+Requires:	%{name}-jdk-base = %{version}-%{release}
+
+%description jmods
+JMods for OpenJDK.
+
+%description jmods -l pl.UTF-8
+JMods dla OpenJDK.
 
 %package jar
 Summary:	OpenJDK - JAR tool
@@ -537,7 +549,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{dstdir}/bin/rmic
 %attr(755,root,root) %{dstdir}/bin/serialver
 %{dstdir}/include
-%{dstdir}/jmods
 %{dstdir}/lib/ct.sym
 
 %files jre
@@ -648,6 +659,10 @@ rm -rf $RPM_BUILD_ROOT
 %files jre-base-freetype
 %defattr(644,root,root,755)
 %attr(755,root,root) %{dstdir}/lib/libfontmanager.so
+
+%files jmods
+%defattr(644,root,root,755)
+%{dstdir}/jmods
 
 %files jar
 %defattr(644,root,root,755)
