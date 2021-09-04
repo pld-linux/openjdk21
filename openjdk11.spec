@@ -26,7 +26,7 @@ Summary:	Open-source implementation of the Java Platform, Standard Edition
 Summary(pl.UTF-8):	Wolnoźródłowa implementacja Java 11 SE
 Name:		openjdk11
 Version:	11.0.12
-Release:	1
+Release:	2
 License:	GPL v2
 Group:		Development/Languages/Java
 Source0:	https://hg.openjdk.java.net/jdk-updates/jdk11u/archive/jdk-%{version}-ga.tar.bz2?/%{name}-%{version}.tar.bz2
@@ -237,6 +237,7 @@ Requires:	%{name}-jre-base = %{version}-%{release}
 Requires:	%{name}-jre-base-freetype = %{version}-%{release}
 Requires:	giflib >= 5.2.1
 Requires:	libpng >= 2:1.6.37
+Provides:	jre-X11 = %{version}
 
 %description jre-base-X11
 X11 support for OpenJDK runtime environment built using free software
