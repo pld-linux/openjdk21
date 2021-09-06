@@ -26,7 +26,7 @@ Summary:	Open-source implementation of the Java Platform, Standard Edition
 Summary(pl.UTF-8):	Wolnoźródłowa implementacja Java 11 SE
 Name:		openjdk11
 Version:	11.0.12
-Release:	3
+Release:	4
 License:	GPL v2
 Group:		Development/Languages/Java
 Source0:	https://hg.openjdk.java.net/jdk-updates/jdk11u/archive/jdk-%{version}-ga.tar.bz2?/%{name}-%{version}.tar.bz2
@@ -73,6 +73,7 @@ Requires:	%{name}-jdk = %{version}-%{release}
 Suggests:	icedtea-web
 Obsoletes:	icedtea6
 Obsoletes:	icedtea7
+Obsoletes:	icedtea8
 Obsoletes:	java-gcj-compat
 Obsoletes:	java-gcj-compat-devel
 Obsoletes:	java-sun
@@ -132,6 +133,7 @@ Obsoletes:	blackdown-java-sdk
 Obsoletes:	ibm-java
 Obsoletes:	icedtea6-jdk
 Obsoletes:	icedtea7-jdk
+Obsoletes:	icedtea8-jdk
 Obsoletes:	java-blackdown
 Obsoletes:	java-gcj-compat-devel
 Obsoletes:	java-sun
@@ -190,6 +192,7 @@ Provides:	java1.4
 Provides:	jre = %{version}
 Obsoletes:	icedtea6-jre
 Obsoletes:	icedtea7-jre
+Obsoletes:	icedtea8-jre
 Obsoletes:	jaas
 Obsoletes:	jaf
 Obsoletes:	java-gcj-compat
@@ -297,6 +300,7 @@ Provides:	jar
 Obsoletes:	fastjar
 Obsoletes:	icedtea6-jar
 Obsoletes:	icedtea7-jar
+Obsoletes:	icedtea8-jar
 Obsoletes:	jar
 
 %description jar
