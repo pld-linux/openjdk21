@@ -1,13 +1,22 @@
 --- jdk9u-jdk-9.0.4+12/src/hotspot/os/linux/os_linux.cpp.orig	2020-08-16 13:46:08.240275890 +0200
 +++ jdk9u-jdk-9.0.4+12/src/hotspot/os/linux/os_linux.cpp	2020-08-16 13:47:54.932632691 +0200
-@@ -289,9 +289,9 @@
+@@ -289,17 +289,10 @@
+   //        1: ...
    //        ...
    //        7: The default directories, normally /lib and /usr/lib.
- #if defined(AMD64) || (defined(_LP64) && defined(SPARC)) || defined(PPC64) || defined(S390)
+-#if defined(AMD64) || (defined(_LP64) && defined(SPARC)) || defined(PPC64) || defined(S390)
 -  #define DEFAULT_LIBPATH "/usr/lib64:/lib64:/lib:/usr/lib"
++#if defined(AMD64) || (defined(_LP64) && defined(SPARC)) || defined(PPC64) || defined(S390) || defined(AARCH64)
 +  #define DEFAULT_LIBPATH "/usr/lib64/java:/usr/lib64:/lib64:/lib:/usr/lib"
  #else
+-#if defined(AARCH64)
+-  // Use 32-bit locations first for AARCH64 (a 64-bit architecture), since some systems
+-  // might not adhere to the FHS and it would be a change in behaviour if we used
+-  // DEFAULT_LIBPATH of other 64-bit architectures which prefer the 64-bit paths.
+-  #define DEFAULT_LIBPATH "/lib:/usr/lib:/usr/lib64:/lib64"
+-#else
 -  #define DEFAULT_LIBPATH "/lib:/usr/lib"
+-#endif // AARCH64
 +  #define DEFAULT_LIBPATH "/usr/lib/java:/lib:/usr/lib"
  #endif
  
