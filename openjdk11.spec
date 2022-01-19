@@ -404,7 +404,7 @@ SHELL=/bin/bash
 EOF
 [ -L tmp-bin ] || ln -s "$specdir/jdk/bin" tmp-bin
 
-%{__make} -j1 all \
+%{__make} -j1 images \
 	LOG=debug \
 	# these are normally set when --disable-debug-symbols is not used \
 	LIBMANAGEMENT_OPTIMIZATION=LOW \
