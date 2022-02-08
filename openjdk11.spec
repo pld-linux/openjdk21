@@ -34,6 +34,7 @@ Source0:	https://github.com/openjdk/jdk11u/archive/jdk-%{version}-ga/%{name}-%{v
 Source10:	make-cacerts.sh
 Patch0:		libpath.patch
 Patch1:		x32.patch
+Patch2:		no_optflags.patch
 URL:		http://openjdk.java.net/
 BuildRequires:	/usr/bin/jar
 BuildRequires:	alsa-lib-devel
@@ -347,6 +348,7 @@ Przykłady dla OpenJDK.
 
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %build
 # Make sure we have /proc mounted - otherwise idlc will fail later.
@@ -406,11 +408,7 @@ EOF
 [ -L tmp-bin ] || ln -s "$specdir/jdk/bin" tmp-bin
 
 %{__make} -j1 images \
-	LOG=debug \
-	# these are normally set when --disable-debug-symbols is not used \
-	LIBMANAGEMENT_OPTIMIZATION=LOW \
-	LIBHPROF_OPTIMIZATION=LOW \
-	LIBVERIFY_OPTIMIZATION=LOW
+	LOG=debug
 
 # smoke test
 tmp-bin/java -version
