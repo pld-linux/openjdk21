@@ -2,9 +2,9 @@
 %bcond_without	cacerts		# don't include the default CA certificates
 
 %if %{with bootstrap}
-%define		use_jdk	openjdk13
-%else
 %define		use_jdk	openjdk14
+%else
+%define		use_jdk	openjdk15
 %endif
 
 %ifarch %{x8664} aarch64
@@ -20,17 +20,17 @@
 %endif
 
 # class data version seen with file(1) that this jvm is able to load
-%define		_classdataversion 58.0
+%define		_classdataversion 59.0
 
 Summary:	Open-source implementation of the Java Platform, Standard Edition
-Summary(pl.UTF-8):	Wolnoźródłowa implementacja Java 14 SE
-Name:		openjdk14
-Version:	14.0.2
+Summary(pl.UTF-8):	Wolnoźródłowa implementacja Java 15 SE
+Name:		openjdk15
+Version:	15.0.6
 Release:	1
 License:	GPL v2
 Group:		Development/Languages/Java
-Source0:	https://github.com/openjdk/jdk14u/archive/jdk-%{version}-ga/%{name}-%{version}.tar.gz
-# Source0-md5:	e14e0d88e5b5d765ccc33e02e504ccf0
+Source0:	https://github.com/openjdk/jdk15u/archive/jdk-%{version}-ga/%{name}-%{version}.tar.gz
+# Source0-md5:	b6c79fe06be88736f3a642d37d7bfe71
 Source10:	make-cacerts.sh
 Patch0:		no_optflags.patch
 URL:		http://openjdk.java.net/
@@ -46,6 +46,7 @@ BuildRequires:	freetype-devel >= 1:2.10.2
 BuildRequires:	gawk
 BuildRequires:	giflib-devel >= 5.2.1
 BuildRequires:	glibc-misc
+BuildRequires:	harfbuzz-devel >= 2.3.1
 %{?buildrequires_jdk}
 BuildRequires:	lcms2-devel >= 2.11
 BuildRequires:	libjpeg-devel
@@ -256,6 +257,7 @@ Summary(pl.UTF-8):	OpenJDK - środowisko uruchomieniowe - obsługa fontów
 Group:		Development/Languages/Java
 Requires:	%{name}-jre-base = %{version}-%{release}
 Requires:	freetype >= 1:2.10.2
+Requires:	harfbuzz >= 2.3.1
 
 %description jre-base-freetype
 Font handling library for OpenJDK runtime environment built using free
@@ -340,7 +342,7 @@ Code examples for OpenJDK.
 Przykłady dla OpenJDK.
 
 %prep
-%setup -qn jdk14u-jdk-%{version}-ga
+%setup -qn jdk15u-jdk-%{version}-ga
 
 %patch0 -p1
 
@@ -368,8 +370,8 @@ chmod a+x configure
 %configure \
 	%{?with_zero:--with-jvm-variants=zero} \
 	--with-boot-jdk="%{java_home}" \
-	--with-extra-cflags="%{rpmcppflags} %{rpmcflags} -fcommon" \
-	--with-extra-cxxflags="%{rpmcppflags} %{rpmcxxflags} -fcommon" \
+	--with-extra-cflags="%{rpmcppflags} %{rpmcflags}" \
+	--with-extra-cxxflags="%{rpmcppflags} %{rpmcxxflags}" \
 	--with-extra-ldflags="%{rpmldflags}" \
 	--with-jni-libpath="%{_libdir}/java %{_libdir} /%{_lib}" \
 	--with-jvm-features="%{?with_shenandoahgc:shenandoahgc}" \
@@ -381,6 +383,7 @@ chmod a+x configure
 	--with-jobs="%{__jobs}" \
 	--with-freetype=system \
 	--with-giflib=system \
+	--with-harfbuzz=system \
 	--with-libjpeg=system \
 	--with-libpng=system \
 	--with-lcms=system \
@@ -481,7 +484,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/jstack
 %attr(755,root,root) %{_bindir}/jstat
 %attr(755,root,root) %{_bindir}/jstatd
-%attr(755,root,root) %{_bindir}/rmic
 %attr(755,root,root) %{_bindir}/serialver
 %{_jvmdir}/java
 %{?with_aot:%{_mandir}/man1/jaotc.1*}
@@ -506,7 +508,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/jstat.1*
 %{_mandir}/man1/jstatd.1*
 %{_mandir}/man1/serialver.1*
-%{_mandir}/man1/rmic.1*
 
 %files jdk-base
 %defattr(644,root,root,755)
@@ -535,7 +536,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{dstdir}/bin/jstack
 %attr(755,root,root) %{dstdir}/bin/jstat
 %attr(755,root,root) %{dstdir}/bin/jstatd
-%attr(755,root,root) %{dstdir}/bin/rmic
 %attr(755,root,root) %{dstdir}/bin/serialver
 %{dstdir}/include
 %{dstdir}/lib/ct.sym
@@ -544,14 +544,12 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/java
 %attr(755,root,root) %{_bindir}/jfr
-%attr(755,root,root) %{_bindir}/jjs
 %attr(755,root,root) %{_bindir}/jrunscript
 %attr(755,root,root) %{_bindir}/keytool
 %attr(755,root,root) %{_bindir}/rmid
 %attr(755,root,root) %{_bindir}/rmiregistry
 %{_mandir}/man1/java.1*
 %{_mandir}/man1/jfr.1*
-%{_mandir}/man1/jjs.1*
 %{_mandir}/man1/jrunscript.1*
 %{_mandir}/man1/keytool.1*
 %{_mandir}/man1/rmid.1*
@@ -567,7 +565,6 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{dstdir}/bin
 %attr(755,root,root) %{dstdir}/bin/java
 %attr(755,root,root) %{dstdir}/bin/jfr
-%attr(755,root,root) %{dstdir}/bin/jjs
 %attr(755,root,root) %{dstdir}/bin/jrunscript
 %attr(755,root,root) %{dstdir}/bin/keytool
 %attr(755,root,root) %{dstdir}/bin/rmid
@@ -581,6 +578,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{dstdir}/lib/server
 %attr(755,root,root) %{dstdir}/lib/server/*.so
 %{dstdir}/lib/server/classes.jsa
+%{dstdir}/lib/server/classes_nocoops.jsa
 %{!?with_zero:%{dstdir}/lib/classlist}
 %{dstdir}/lib/jrt-fs.jar
 %{dstdir}/lib/jvm.cfg

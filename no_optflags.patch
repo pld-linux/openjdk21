@@ -1,6 +1,6 @@
---- jdk13u-jdk-13.0.10-ga/make/common/NativeCompilation.gmk.orig	2022-01-18 08:33:02.000000000 +0100
-+++ jdk13u-jdk-13.0.10-ga/make/common/NativeCompilation.gmk	2022-02-09 12:16:42.666629522 +0100
-@@ -352,13 +352,13 @@
+--- jdk15u-jdk-15.0.6-ga/make/common/NativeCompilation.gmk.orig	2022-01-18 11:40:33.000000000 +0100
++++ jdk15u-jdk-15.0.6-ga/make/common/NativeCompilation.gmk	2022-02-09 12:40:58.622750325 +0100
+@@ -353,13 +353,13 @@
      ifneq ($$(filter %.c, $$($1_FILENAME)), )
        # Compile as a C file
        $1_FLAGS := $(CFLAGS_CCACHE) $$($1_USE_PCH_FLAGS) $$($1_BASE_CFLAGS) \
@@ -16,7 +16,7 @@
        $1_COMPILER := $$($$($1_BASE)_CC)
        $1_DEP_FLAG := $(C_FLAG_DEPS)
      else ifneq ($$(filter %.s %.S, $$($1_FILENAME)), )
-@@ -369,7 +369,7 @@
+@@ -370,7 +370,7 @@
      else ifneq ($$(filter %.cpp %.cc %.mm, $$($1_FILENAME)), )
        # Compile as a C++ or Objective-C++ file
        $1_FLAGS := $(CFLAGS_CCACHE) $$($1_USE_PCH_FLAGS) $$($1_BASE_CXXFLAGS) \
@@ -25,7 +25,7 @@
        $1_COMPILER := $$($$($1_BASE)_CXX)
        $1_DEP_FLAG := $(CXX_FLAG_DEPS)
      else
-@@ -782,7 +782,7 @@
+@@ -775,7 +775,7 @@
    # lines for all object files in this setup. This includes at least all the
    # variables used in the call to add_native_source below.
    $1_COMPILE_VARDEPS := $$($1_CFLAGS) $$($1_EXTRA_CFLAGS) $$($1_SYSROOT_CFLAGS) \
@@ -34,12 +34,12 @@
        $$($1_CC) $$($1_CXX) $$($1_AS) $$($1_ASFLAGS)
    $1_COMPILE_VARDEPS_FILE := $$(call DependOnVariable, $1_COMPILE_VARDEPS, \
        $$($1_OBJECT_DIR)/$$($1_NOSUFFIX).comp.vardeps)
-@@ -827,7 +827,7 @@
+@@ -820,7 +820,7 @@
          -include $$($1_PCH_DEPS_TARGETS_FILE)
  
          $1_PCH_COMMAND := $$($1_CC) $$($1_CFLAGS) $$($1_EXTRA_CFLAGS) $$($1_SYSROOT_CFLAGS) \
--            $$($1_OPT_CFLAGS) -x c++-header -c $(C_FLAG_DEPS) $$($1_PCH_DEPS_FILE)
-+            -x c++-header -c $(C_FLAG_DEPS) $$($1_PCH_DEPS_FILE)
+-            $$($1_OPT_CFLAGS) -x c++-header -c $(C_FLAG_DEPS) \
++            -x c++-header -c $(C_FLAG_DEPS) \
+             $$(addsuffix .tmp, $$($1_PCH_DEPS_FILE))
  
          $$($1_PCH_FILE): $$($1_PRECOMPILED_HEADER) $$($1_COMPILE_VARDEPS_FILE)
- 		$$(call LogInfo, Generating precompiled header)
