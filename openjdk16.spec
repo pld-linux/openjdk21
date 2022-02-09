@@ -2,9 +2,9 @@
 %bcond_without	cacerts		# don't include the default CA certificates
 
 %if %{with bootstrap}
-%define		use_jdk	openjdk14
-%else
 %define		use_jdk	openjdk15
+%else
+%define		use_jdk	openjdk16
 %endif
 
 %ifarch %{x8664} aarch64
@@ -20,17 +20,17 @@
 %endif
 
 # class data version seen with file(1) that this jvm is able to load
-%define		_classdataversion 59.0
+%define		_classdataversion 60.0
 
 Summary:	Open-source implementation of the Java Platform, Standard Edition
-Summary(pl.UTF-8):	Wolnoźródłowa implementacja Java 15 SE
-Name:		openjdk15
-Version:	15.0.6
+Summary(pl.UTF-8):	Wolnoźródłowa implementacja Java 16 SE
+Name:		openjdk16
+Version:	16.0.2
 Release:	1
 License:	GPL v2
 Group:		Development/Languages/Java
-Source0:	https://github.com/openjdk/jdk15u/archive/jdk-%{version}-ga/%{name}-%{version}.tar.gz
-# Source0-md5:	b6c79fe06be88736f3a642d37d7bfe71
+Source0:	https://github.com/openjdk/jdk16u/archive/jdk-%{version}-ga/%{name}-%{version}.tar.gz
+# Source0-md5:	08b1c057136a6756cd8e4609dc517339
 Source10:	make-cacerts.sh
 Patch0:		no_optflags.patch
 URL:		http://openjdk.java.net/
@@ -342,7 +342,7 @@ Code examples for OpenJDK.
 Przykłady dla OpenJDK.
 
 %prep
-%setup -qn jdk15u-jdk-%{version}-ga
+%setup -qn jdk16u-jdk-%{version}-ga
 
 %patch0 -p1
 
@@ -601,7 +601,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{dstdir}/lib/libprefs.so
 %attr(755,root,root) %{dstdir}/lib/librmi.so
 %attr(755,root,root) %{dstdir}/lib/libsctp.so
-%attr(755,root,root) %{dstdir}/lib/libsunec.so
 %attr(755,root,root) %{dstdir}/lib/libjavajpeg.so
 %attr(755,root,root) %{dstdir}/lib/libjdwp.so
 %attr(755,root,root) %{dstdir}/lib/libjsig.so
@@ -611,7 +610,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{dstdir}/lib/libnet.so
 %attr(755,root,root) %{dstdir}/lib/libnio.so
 %{!?with_zero:%attr(755,root,root) %{dstdir}/lib/libsaproc.so}
-%{?with_sunec:%attr(755,root,root) %{dstdir}/lib/libsunec.so}
 %attr(755,root,root) %{dstdir}/lib/libverify.so
 %attr(755,root,root) %{dstdir}/lib/libzip.so
 %attr(755,root,root) %{dstdir}/lib/jexec
