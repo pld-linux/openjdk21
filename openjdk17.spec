@@ -2,13 +2,9 @@
 %bcond_without	cacerts		# don't include the default CA certificates
 
 %if %{with bootstrap}
-%define		use_jdk	openjdk15
-%else
 %define		use_jdk	openjdk16
-%endif
-
-%ifarch %{x8664} aarch64
-%define		with_aot	1
+%else
+%define		use_jdk	openjdk17
 %endif
 
 %ifarch x32
@@ -20,17 +16,17 @@
 %endif
 
 # class data version seen with file(1) that this jvm is able to load
-%define		_classdataversion 60.0
+%define		_classdataversion 61.0
 
 Summary:	Open-source implementation of the Java Platform, Standard Edition
-Summary(pl.UTF-8):	Wolnoźródłowa implementacja Java 16 SE
-Name:		openjdk16
-Version:	16.0.2
+Summary(pl.UTF-8):	Wolnoźródłowa implementacja Java 17 SE
+Name:		openjdk17
+Version:	17.0.2
 Release:	1
 License:	GPL v2
 Group:		Development/Languages/Java
-Source0:	https://github.com/openjdk/jdk16u/archive/jdk-%{version}-ga/%{name}-%{version}.tar.gz
-# Source0-md5:	08b1c057136a6756cd8e4609dc517339
+Source0:	https://github.com/openjdk/jdk17u/archive/jdk-%{version}-ga/%{name}-%{version}.tar.gz
+# Source0-md5:	94344312ee396394964f51933936f7aa
 Source10:	make-cacerts.sh
 Patch0:		no_optflags.patch
 URL:		http://openjdk.java.net/
@@ -342,7 +338,7 @@ Code examples for OpenJDK.
 Przykłady dla OpenJDK.
 
 %prep
-%setup -qn jdk16u-jdk-%{version}-ga
+%setup -qn jdk17u-jdk-%{version}-ga
 
 %patch0 -p1
 
@@ -462,7 +458,6 @@ rm -rf $RPM_BUILD_ROOT
 
 %files jdk
 %defattr(644,root,root,755)
-%{?with_aot:%attr(755,root,root) %{_bindir}/jaotc}
 %attr(755,root,root) %{_bindir}/jarsigner
 %attr(755,root,root) %{_bindir}/javac
 %attr(755,root,root) %{_bindir}/javadoc
@@ -486,7 +481,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/jstatd
 %attr(755,root,root) %{_bindir}/serialver
 %{_jvmdir}/java
-%{?with_aot:%{_mandir}/man1/jaotc.1*}
 %{_mandir}/man1/jarsigner.1*
 %{_mandir}/man1/javac.1*
 %{_mandir}/man1/javadoc.1*
@@ -513,7 +507,6 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %dir %{dstdir}
 %{_jvmdir}/%{name}
-%{?with_aot:%attr(755,root,root) %{dstdir}/bin/jaotc}
 %attr(755,root,root) %{dstdir}/bin/jar
 %attr(755,root,root) %{dstdir}/bin/jarsigner
 %attr(755,root,root) %{dstdir}/bin/javac
@@ -546,13 +539,11 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/jfr
 %attr(755,root,root) %{_bindir}/jrunscript
 %attr(755,root,root) %{_bindir}/keytool
-%attr(755,root,root) %{_bindir}/rmid
 %attr(755,root,root) %{_bindir}/rmiregistry
 %{_mandir}/man1/java.1*
 %{_mandir}/man1/jfr.1*
 %{_mandir}/man1/jrunscript.1*
 %{_mandir}/man1/keytool.1*
-%{_mandir}/man1/rmid.1*
 %{_mandir}/man1/rmiregistry.1*
 
 %files jre-base
@@ -567,7 +558,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{dstdir}/bin/jfr
 %attr(755,root,root) %{dstdir}/bin/jrunscript
 %attr(755,root,root) %{dstdir}/bin/keytool
-%attr(755,root,root) %{dstdir}/bin/rmid
 %attr(755,root,root) %{dstdir}/bin/rmiregistry
 %{dstdir}/conf
 %{dstdir}/legal
@@ -595,12 +585,14 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{dstdir}/lib/libjava.so
 %attr(755,root,root) %{dstdir}/lib/libjimage.so
 %attr(755,root,root) %{dstdir}/lib/libjli.so
+%attr(755,root,root) %{dstdir}/lib/libjsvml.so
 %attr(755,root,root) %{dstdir}/lib/liblcms.so
 %attr(755,root,root) %{dstdir}/lib/libmanagement_agent.so
 %attr(755,root,root) %{dstdir}/lib/libmanagement_ext.so
 %attr(755,root,root) %{dstdir}/lib/libprefs.so
 %attr(755,root,root) %{dstdir}/lib/librmi.so
 %attr(755,root,root) %{dstdir}/lib/libsctp.so
+%attr(755,root,root) %{dstdir}/lib/libsyslookup.so
 %attr(755,root,root) %{dstdir}/lib/libjavajpeg.so
 %attr(755,root,root) %{dstdir}/lib/libjdwp.so
 %attr(755,root,root) %{dstdir}/lib/libjsig.so

@@ -1,31 +1,30 @@
---- jdk15u-jdk-15.0.6-ga/make/common/NativeCompilation.gmk.orig	2022-01-18 11:40:33.000000000 +0100
-+++ jdk15u-jdk-15.0.6-ga/make/common/NativeCompilation.gmk	2022-02-09 12:40:58.622750325 +0100
-@@ -353,13 +353,13 @@
+--- jdk17u-jdk-17.0.2-ga/make/common/NativeCompilation.gmk.orig	2021-12-07 19:03:22.000000000 +0100
++++ jdk17u-jdk-17.0.2-ga/make/common/NativeCompilation.gmk	2022-02-09 13:29:15.184653743 +0100
+@@ -347,12 +347,12 @@
      ifneq ($$(filter %.c, $$($1_FILENAME)), )
        # Compile as a C file
        $1_FLAGS := $(CFLAGS_CCACHE) $$($1_USE_PCH_FLAGS) $$($1_BASE_CFLAGS) \
 -          $$($1_OPT_CFLAGS) $$($1_CFLAGS) -c
 +          $$($1_CFLAGS) -c
        $1_COMPILER := $$($$($1_BASE)_CC)
-       $1_DEP_FLAG := $(C_FLAG_DEPS)
      else ifneq ($$(filter %.m, $$($1_FILENAME)), )
        # Compile as an Objective-C file
        $1_FLAGS := -x objective-c $(CFLAGS_CCACHE) $$($1_USE_PCH_FLAGS) \
 -          $$($1_BASE_CFLAGS) $$($1_OPT_CFLAGS) $$($1_CFLAGS) -c
 +          $$($1_BASE_CFLAGS) $$($1_CFLAGS) -c
        $1_COMPILER := $$($$($1_BASE)_CC)
-       $1_DEP_FLAG := $(C_FLAG_DEPS)
-     else ifneq ($$(filter %.s %.S, $$($1_FILENAME)), )
-@@ -370,7 +370,7 @@
+     else ifneq ($$(filter %.S, $$($1_FILENAME)), )
+       # Compile as preprocessed assembler file
+@@ -361,7 +361,7 @@
      else ifneq ($$(filter %.cpp %.cc %.mm, $$($1_FILENAME)), )
        # Compile as a C++ or Objective-C++ file
        $1_FLAGS := $(CFLAGS_CCACHE) $$($1_USE_PCH_FLAGS) $$($1_BASE_CXXFLAGS) \
 -          $$($1_OPT_CXXFLAGS) $$($1_CXXFLAGS) -c
 +          $$($1_CXXFLAGS) -c
        $1_COMPILER := $$($$($1_BASE)_CXX)
-       $1_DEP_FLAG := $(CXX_FLAG_DEPS)
      else
-@@ -775,7 +775,7 @@
+       $$(error Internal error in NativeCompilation.gmk: no compiler for file $$($1_FILENAME))
+@@ -773,7 +773,7 @@
    # lines for all object files in this setup. This includes at least all the
    # variables used in the call to add_native_source below.
    $1_COMPILE_VARDEPS := $$($1_CFLAGS) $$($1_EXTRA_CFLAGS) $$($1_SYSROOT_CFLAGS) \
@@ -34,12 +33,12 @@
        $$($1_CC) $$($1_CXX) $$($1_AS) $$($1_ASFLAGS)
    $1_COMPILE_VARDEPS_FILE := $$(call DependOnVariable, $1_COMPILE_VARDEPS, \
        $$($1_OBJECT_DIR)/$$($1_NOSUFFIX).comp.vardeps)
-@@ -820,7 +820,7 @@
+@@ -818,7 +818,7 @@
          -include $$($1_PCH_DEPS_TARGETS_FILE)
  
          $1_PCH_COMMAND := $$($1_CC) $$($1_CFLAGS) $$($1_EXTRA_CFLAGS) $$($1_SYSROOT_CFLAGS) \
--            $$($1_OPT_CFLAGS) -x c++-header -c $(C_FLAG_DEPS) \
-+            -x c++-header -c $(C_FLAG_DEPS) \
+-            $$($1_OPT_CFLAGS) -x c++-header -c $(GENDEPS_FLAGS) \
++            -x c++-header -c $(GENDEPS_FLAGS) \
              $$(addsuffix .tmp, $$($1_PCH_DEPS_FILE))
  
          $$($1_PCH_FILE): $$($1_PRECOMPILED_HEADER) $$($1_COMPILE_VARDEPS_FILE)
