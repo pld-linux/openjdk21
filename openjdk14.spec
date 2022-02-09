@@ -2,9 +2,9 @@
 %bcond_without	cacerts		# don't include the default CA certificates
 
 %if %{with bootstrap}
-%define		use_jdk	openjdk12
-%else
 %define		use_jdk	openjdk13
+%else
+%define		use_jdk	openjdk14
 %endif
 
 %ifarch %{x8664} aarch64
@@ -20,17 +20,17 @@
 %endif
 
 # class data version seen with file(1) that this jvm is able to load
-%define		_classdataversion 57.0
+%define		_classdataversion 58.0
 
 Summary:	Open-source implementation of the Java Platform, Standard Edition
-Summary(pl.UTF-8):	Wolnoźródłowa implementacja Java 13 SE
-Name:		openjdk13
-Version:	13.0.10
+Summary(pl.UTF-8):	Wolnoźródłowa implementacja Java 14 SE
+Name:		openjdk14
+Version:	14.0.2
 Release:	1
 License:	GPL v2
 Group:		Development/Languages/Java
-Source0:	https://github.com/openjdk/jdk13u/archive/jdk-%{version}-ga/%{name}-%{version}.tar.gz
-# Source0-md5:	270e32c28e48244c6a57d518433bf7ae
+Source0:	https://github.com/openjdk/jdk14u/archive/jdk-%{version}-ga/%{name}-%{version}.tar.gz
+# Source0-md5:	e14e0d88e5b5d765ccc33e02e504ccf0
 Source10:	make-cacerts.sh
 Patch0:		no_optflags.patch
 URL:		http://openjdk.java.net/
@@ -46,7 +46,6 @@ BuildRequires:	freetype-devel >= 1:2.10.2
 BuildRequires:	gawk
 BuildRequires:	giflib-devel >= 5.2.1
 BuildRequires:	glibc-misc
-BuildRequires:	harfbuzz-devel >= 2.3.1
 %{?buildrequires_jdk}
 BuildRequires:	lcms2-devel >= 2.11
 BuildRequires:	libjpeg-devel
@@ -257,7 +256,6 @@ Summary(pl.UTF-8):	OpenJDK - środowisko uruchomieniowe - obsługa fontów
 Group:		Development/Languages/Java
 Requires:	%{name}-jre-base = %{version}-%{release}
 Requires:	freetype >= 1:2.10.2
-Requires:	harfbuzz >= 2.3.1
 
 %description jre-base-freetype
 Font handling library for OpenJDK runtime environment built using free
@@ -342,7 +340,7 @@ Code examples for OpenJDK.
 Przykłady dla OpenJDK.
 
 %prep
-%setup -qn jdk13u-jdk-%{version}-ga
+%setup -qn jdk14u-jdk-%{version}-ga
 
 %patch0 -p1
 
@@ -383,7 +381,6 @@ chmod a+x configure
 	--with-jobs="%{__jobs}" \
 	--with-freetype=system \
 	--with-giflib=system \
-	--with-harfbuzz=system \
 	--with-libjpeg=system \
 	--with-libpng=system \
 	--with-lcms=system \
@@ -478,6 +475,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/jlink
 %attr(755,root,root) %{_bindir}/jmap
 %attr(755,root,root) %{_bindir}/jmod
+%attr(755,root,root) %{_bindir}/jpackage
 %attr(755,root,root) %{_bindir}/jps
 %attr(755,root,root) %{_bindir}/jshell
 %attr(755,root,root) %{_bindir}/jstack
@@ -501,6 +499,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/jlink.1*
 %{_mandir}/man1/jmap.1*
 %{_mandir}/man1/jmod.1*
+%{_mandir}/man1/jpackage.1*
 %{_mandir}/man1/jps.1*
 %{_mandir}/man1/jshell.1*
 %{_mandir}/man1/jstack.1*
@@ -530,6 +529,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{dstdir}/bin/jlink
 %attr(755,root,root) %{dstdir}/bin/jmap
 %attr(755,root,root) %{dstdir}/bin/jmod
+%attr(755,root,root) %{dstdir}/bin/jpackage
 %attr(755,root,root) %{dstdir}/bin/jps
 %attr(755,root,root) %{dstdir}/bin/jshell
 %attr(755,root,root) %{dstdir}/bin/jstack
@@ -547,19 +547,15 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/jjs
 %attr(755,root,root) %{_bindir}/jrunscript
 %attr(755,root,root) %{_bindir}/keytool
-%attr(755,root,root) %{_bindir}/pack200
 %attr(755,root,root) %{_bindir}/rmid
 %attr(755,root,root) %{_bindir}/rmiregistry
-%attr(755,root,root) %{_bindir}/unpack200
 %{_mandir}/man1/java.1*
 %{_mandir}/man1/jfr.1*
 %{_mandir}/man1/jjs.1*
 %{_mandir}/man1/jrunscript.1*
 %{_mandir}/man1/keytool.1*
-%{_mandir}/man1/pack200.1*
 %{_mandir}/man1/rmid.1*
 %{_mandir}/man1/rmiregistry.1*
-%{_mandir}/man1/unpack200.1*
 
 %files jre-base
 %defattr(644,root,root,755)
@@ -574,10 +570,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{dstdir}/bin/jjs
 %attr(755,root,root) %{dstdir}/bin/jrunscript
 %attr(755,root,root) %{dstdir}/bin/keytool
-%attr(755,root,root) %{dstdir}/bin/pack200
 %attr(755,root,root) %{dstdir}/bin/rmid
 %attr(755,root,root) %{dstdir}/bin/rmiregistry
-%attr(755,root,root) %{dstdir}/bin/unpack200
 %{dstdir}/conf
 %{dstdir}/legal
 %dir %{dstdir}/lib
@@ -620,7 +614,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{dstdir}/lib/libnio.so
 %{!?with_zero:%attr(755,root,root) %{dstdir}/lib/libsaproc.so}
 %{?with_sunec:%attr(755,root,root) %{dstdir}/lib/libsunec.so}
-%attr(755,root,root) %{dstdir}/lib/libunpack.so
 %attr(755,root,root) %{dstdir}/lib/libverify.so
 %attr(755,root,root) %{dstdir}/lib/libzip.so
 %attr(755,root,root) %{dstdir}/lib/jexec
