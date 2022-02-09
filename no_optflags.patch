@@ -1,31 +1,31 @@
---- jdk11u-jdk-11.0.14.1-ga/make/common/NativeCompilation.gmk.orig	2022-02-07 17:26:34.000000000 +0100
-+++ jdk11u-jdk-11.0.14.1-ga/make/common/NativeCompilation.gmk	2022-02-08 02:14:57.986886271 +0100
-@@ -369,13 +369,13 @@
+--- jdk12u-jdk-12.0.2-ga/make/common/NativeCompilation.gmk.orig	2019-07-16 18:38:28.000000000 +0200
++++ jdk12u-jdk-12.0.2-ga/make/common/NativeCompilation.gmk	2022-02-08 09:20:46.175688972 +0100
+@@ -282,13 +282,13 @@
      ifneq ($$(filter %.c, $$($1_FILENAME)), )
        # Compile as a C file
        $1_FLAGS := $(CFLAGS_CCACHE) $$($1_USE_PCH_FLAGS) $$($1_BASE_CFLAGS) \
--          $$($1_OPT_CFLAGS) $$($1_CFLAGS) -c
-+          $$($1_CFLAGS) -c
+-          $$($1_OPT_CFLAGS) $$($1_CFLAGS) $$($1_THIS_FILE) -c
++          $$($1_CFLAGS) $$($1_THIS_FILE) -c
        $1_COMPILER := $$($$($1_BASE)_CC)
        $1_DEP_FLAG := $(C_FLAG_DEPS)
      else ifneq ($$(filter %.m, $$($1_FILENAME)), )
        # Compile as an Objective-C file
        $1_FLAGS := -x objective-c $(CFLAGS_CCACHE) $$($1_USE_PCH_FLAGS) \
--          $$($1_BASE_CFLAGS) $$($1_OPT_CFLAGS) $$($1_CFLAGS) -c
-+          $$($1_BASE_CFLAGS) $$($1_CFLAGS) -c
+-          $$($1_BASE_CFLAGS) $$($1_OPT_CFLAGS) $$($1_CFLAGS) $$($1_THIS_FILE) -c
++          $$($1_BASE_CFLAGS) $$($1_CFLAGS) $$($1_THIS_FILE) -c
        $1_COMPILER := $$($$($1_BASE)_CC)
        $1_DEP_FLAG := $(C_FLAG_DEPS)
      else ifneq ($$(filter %.s %.S, $$($1_FILENAME)), )
-@@ -386,7 +386,7 @@
+@@ -299,7 +299,7 @@
      else ifneq ($$(filter %.cpp %.cc %.mm, $$($1_FILENAME)), )
        # Compile as a C++ or Objective-C++ file
        $1_FLAGS := $(CFLAGS_CCACHE) $$($1_USE_PCH_FLAGS) $$($1_BASE_CXXFLAGS) \
--          $$($1_OPT_CXXFLAGS) $$($1_CXXFLAGS) -c
-+          $$($1_CXXFLAGS) -c
+-          $$($1_OPT_CXXFLAGS) $$($1_CXXFLAGS) $$($1_THIS_FILE) -c
++          $$($1_CXXFLAGS) $$($1_THIS_FILE) -c
        $1_COMPILER := $$($$($1_BASE)_CXX)
        $1_DEP_FLAG := $(CXX_FLAG_DEPS)
      else
-@@ -793,7 +793,7 @@
+@@ -679,7 +679,7 @@
    # lines for all object files in this setup. This includes at least all the
    # variables used in the call to add_native_source below.
    $1_COMPILE_VARDEPS := $$($1_CFLAGS) $$($1_EXTRA_CFLAGS) $$($1_SYSROOT_CFLAGS) \
@@ -34,12 +34,12 @@
        $$($1_CC) $$($1_CXX) $$($1_AS) $$($1_ASFLAGS)
    $1_COMPILE_VARDEPS_FILE := $$(call DependOnVariable, $1_COMPILE_VARDEPS, \
        $$($1_OBJECT_DIR)/$$($1_NOSUFFIX).comp.vardeps)
-@@ -838,7 +838,7 @@
-         -include $$($1_PCH_DEPS_TARGETS_FILE)
+@@ -725,7 +725,7 @@
+         -include $$($1_PCH_DEP_TARGETS)
  
          $1_PCH_COMMAND := $$($1_CC) $$($1_CFLAGS) $$($1_EXTRA_CFLAGS) $$($1_SYSROOT_CFLAGS) \
--            $$($1_OPT_CFLAGS) -x c++-header -c $(C_FLAG_DEPS) \
-+            -x c++-header -c $(C_FLAG_DEPS) \
-             $$(addsuffix .tmp, $$($1_PCH_DEPS_FILE))
+-            $$($1_OPT_CFLAGS) -x c++-header -c $(C_FLAG_DEPS) $$($1_PCH_DEP)
++            -x c++-header -c $(C_FLAG_DEPS) $$($1_PCH_DEP)
  
          $$($1_PCH_FILE): $$($1_PRECOMPILED_HEADER) $$($1_COMPILE_VARDEPS_FILE)
+ 		$$(call LogInfo, Generating precompiled header)

@@ -2,9 +2,9 @@
 %bcond_without	cacerts		# don't include the default CA certificates
 
 %if %{with bootstrap}
-%define		use_jdk	openjdk10
-%else
 %define		use_jdk	openjdk11
+%else
+%define		use_jdk	openjdk12
 %endif
 
 %ifarch %{x8664} aarch64
@@ -20,21 +20,20 @@
 %endif
 
 # class data version seen with file(1) that this jvm is able to load
-%define		_classdataversion 55.0
+%define		_classdataversion 56.0
 
 Summary:	Open-source implementation of the Java Platform, Standard Edition
-Summary(pl.UTF-8):	Wolnoźródłowa implementacja Java 11 SE
-Name:		openjdk11
-Version:	11.0.14.1
+Summary(pl.UTF-8):	Wolnoźródłowa implementacja Java 12 SE
+Name:		openjdk12
+Version:	12.0.2
 Release:	1
 License:	GPL v2
 Group:		Development/Languages/Java
-Source0:	https://github.com/openjdk/jdk11u/archive/jdk-%{version}-ga/%{name}-%{version}.tar.gz
-# Source0-md5:	9e357196b0a0d50e4955882bfa97a2f9
+Source0:	https://github.com/openjdk/jdk12u/archive/jdk-%{version}-ga/%{name}-%{version}.tar.gz
+# Source0-md5:	fe3addb26254c5a9ac17922358e2a055
 Source10:	make-cacerts.sh
-Patch0:		libpath.patch
-Patch1:		x32.patch
-Patch2:		no_optflags.patch
+Patch0:		no_optflags.patch
+Patch1:		make-4.3.patch
 URL:		http://openjdk.java.net/
 BuildRequires:	/usr/bin/jar
 BuildRequires:	alsa-lib-devel
@@ -48,7 +47,6 @@ BuildRequires:	freetype-devel >= 1:2.10.2
 BuildRequires:	gawk
 BuildRequires:	giflib-devel >= 5.2.1
 BuildRequires:	glibc-misc
-BuildRequires:	harfbuzz-devel >= 2.3.1
 %{?buildrequires_jdk}
 BuildRequires:	lcms2-devel >= 2.11
 BuildRequires:	libjpeg-devel
@@ -259,7 +257,6 @@ Summary(pl.UTF-8):	OpenJDK - środowisko uruchomieniowe - obsługa fontów
 Group:		Development/Languages/Java
 Requires:	%{name}-jre-base = %{version}-%{release}
 Requires:	freetype >= 1:2.10.2
-Requires:	harfbuzz >= 2.3.1
 
 %description jre-base-freetype
 Font handling library for OpenJDK runtime environment built using free
@@ -344,11 +341,10 @@ Code examples for OpenJDK.
 Przykłady dla OpenJDK.
 
 %prep
-%setup -qn jdk11u-jdk-%{version}-ga
+%setup -qn jdk12u-jdk-%{version}-ga
 
 %patch0 -p1
 %patch1 -p1
-%patch2 -p1
 
 %build
 # Make sure we have /proc mounted - otherwise idlc will fail later.
@@ -374,9 +370,10 @@ chmod a+x configure
 %configure \
 	%{?with_zero:--with-jvm-variants=zero} \
 	--with-boot-jdk="%{java_home}" \
-	--with-extra-cflags="%{rpmcppflags} %{rpmcflags}" \
-	--with-extra-cxxflags="%{rpmcppflags} %{rpmcxxflags}" \
+	--with-extra-cflags="%{rpmcppflags} %{rpmcflags} -fcommon -O0" \
+	--with-extra-cxxflags="%{rpmcppflags} %{rpmcxxflags} -fcommon -O0" \
 	--with-extra-ldflags="%{rpmldflags}" \
+	--with-jni-libpath="%{_libdir}/java %{_libdir} /%{_lib}" \
 	--with-jvm-features="%{?with_shenandoahgc:shenandoahgc}" \
 	--with-native-debug-symbols=none \
 	--disable-full-docs \
@@ -386,7 +383,6 @@ chmod a+x configure
 	--with-jobs="%{__jobs}" \
 	--with-freetype=system \
 	--with-giflib=system \
-	--with-harfbuzz=system \
 	--with-libjpeg=system \
 	--with-libpng=system \
 	--with-lcms=system \
@@ -438,9 +434,6 @@ mv $RPM_BUILD_ROOT%{dstdir}/demo $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{versio
 mv $RPM_BUILD_ROOT%{dstdir}/lib/src.zip $RPM_BUILD_ROOT%{_javasrcdir}/%{name}-jdk.zip
 
 # move manual pages to its place
-mv $RPM_BUILD_ROOT%{dstdir}/man/ja_JP.UTF-8/man1 $RPM_BUILD_ROOT%{_mandir}/ja/man1
-rmdir $RPM_BUILD_ROOT%{dstdir}/man/ja_JP.UTF-8
-rm $RPM_BUILD_ROOT%{dstdir}/man/ja
 mv $RPM_BUILD_ROOT%{dstdir}/man/man1 $RPM_BUILD_ROOT%{_mandir}/man1
 rmdir $RPM_BUILD_ROOT%{dstdir}/man
 
@@ -508,22 +501,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/jstatd.1*
 %{_mandir}/man1/serialver.1*
 %{_mandir}/man1/rmic.1*
-%lang(ja) %{_mandir}/ja/man1/jarsigner.1*
-%lang(ja) %{_mandir}/ja/man1/javac.1*
-%lang(ja) %{_mandir}/ja/man1/javadoc.1*
-%lang(ja) %{_mandir}/ja/man1/javap.1*
-%lang(ja) %{_mandir}/ja/man1/jcmd.1*
-%lang(ja) %{_mandir}/ja/man1/jconsole.1*
-%lang(ja) %{_mandir}/ja/man1/jdb.1*
-%lang(ja) %{_mandir}/ja/man1/jdeps.1*
-%lang(ja) %{_mandir}/ja/man1/jinfo.1*
-%lang(ja) %{_mandir}/ja/man1/jmap.1*
-%lang(ja) %{_mandir}/ja/man1/jps.1*
-%lang(ja) %{_mandir}/ja/man1/jstack.1*
-%lang(ja) %{_mandir}/ja/man1/jstat.1*
-%lang(ja) %{_mandir}/ja/man1/jstatd.1*
-%lang(ja) %{_mandir}/ja/man1/serialver.1*
-%lang(ja) %{_mandir}/ja/man1/rmic.1*
 
 %files jdk-base
 %defattr(644,root,root,755)
@@ -575,14 +552,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/rmid.1*
 %{_mandir}/man1/rmiregistry.1*
 %{_mandir}/man1/unpack200.1*
-%lang(ja) %{_mandir}/ja/man1/java.1*
-%lang(ja) %{_mandir}/ja/man1/jjs.1*
-%lang(ja) %{_mandir}/ja/man1/jrunscript.1*
-%lang(ja) %{_mandir}/ja/man1/keytool.1*
-%lang(ja) %{_mandir}/ja/man1/pack200.1*
-%lang(ja) %{_mandir}/ja/man1/rmid.1*
-%lang(ja) %{_mandir}/ja/man1/rmiregistry.1*
-%lang(ja) %{_mandir}/ja/man1/unpack200.1*
 
 %files jre-base
 %defattr(644,root,root,755)
@@ -606,12 +575,11 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{dstdir}/lib
 %dir %{dstdir}/lib/jfr
 %{dstdir}/lib/jfr/*.jfc
-%dir %{dstdir}/lib/jli
-%attr(755,root,root) %{dstdir}/lib/jli/libjli.so
 %{dstdir}/lib/security
 %dir %{dstdir}/lib/server
 %attr(755,root,root) %{dstdir}/lib/server/*.so
 %{dstdir}/lib/server/Xusage.txt
+%{dstdir}/lib/server/classes.jsa
 %{!?with_zero:%{dstdir}/lib/classlist}
 %{dstdir}/lib/jrt-fs.jar
 %{dstdir}/lib/jvm.cfg
@@ -627,6 +595,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{dstdir}/lib/libjaas.so
 %attr(755,root,root) %{dstdir}/lib/libjava.so
 %attr(755,root,root) %{dstdir}/lib/libjimage.so
+%attr(755,root,root) %{dstdir}/lib/libjli.so
 %attr(755,root,root) %{dstdir}/lib/liblcms.so
 %attr(755,root,root) %{dstdir}/lib/libmanagement_agent.so
 %attr(755,root,root) %{dstdir}/lib/libmanagement_ext.so
@@ -673,7 +642,6 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/jar
 %{_mandir}/man1/jar.1*
-%lang(ja) %{_mandir}/ja/man1/jar.1*
 
 %files jdk-sources
 %defattr(644,root,root,755)
