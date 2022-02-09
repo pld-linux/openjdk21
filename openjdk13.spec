@@ -2,9 +2,9 @@
 %bcond_without	cacerts		# don't include the default CA certificates
 
 %if %{with bootstrap}
-%define		use_jdk	openjdk11
-%else
 %define		use_jdk	openjdk12
+%else
+%define		use_jdk	openjdk13
 %endif
 
 %ifarch %{x8664} aarch64
@@ -20,20 +20,19 @@
 %endif
 
 # class data version seen with file(1) that this jvm is able to load
-%define		_classdataversion 56.0
+%define		_classdataversion 57.0
 
 Summary:	Open-source implementation of the Java Platform, Standard Edition
-Summary(pl.UTF-8):	Wolnoźródłowa implementacja Java 12 SE
-Name:		openjdk12
-Version:	12.0.2
+Summary(pl.UTF-8):	Wolnoźródłowa implementacja Java 13 SE
+Name:		openjdk13
+Version:	13.0.10
 Release:	1
 License:	GPL v2
 Group:		Development/Languages/Java
-Source0:	https://github.com/openjdk/jdk12u/archive/jdk-%{version}-ga/%{name}-%{version}.tar.gz
-# Source0-md5:	fe3addb26254c5a9ac17922358e2a055
+Source0:	https://github.com/openjdk/jdk13u/archive/jdk-%{version}-ga/%{name}-%{version}.tar.gz
+# Source0-md5:	270e32c28e48244c6a57d518433bf7ae
 Source10:	make-cacerts.sh
 Patch0:		no_optflags.patch
-Patch1:		make-4.3.patch
 URL:		http://openjdk.java.net/
 BuildRequires:	/usr/bin/jar
 BuildRequires:	alsa-lib-devel
@@ -47,6 +46,7 @@ BuildRequires:	freetype-devel >= 1:2.10.2
 BuildRequires:	gawk
 BuildRequires:	giflib-devel >= 5.2.1
 BuildRequires:	glibc-misc
+BuildRequires:	harfbuzz-devel >= 2.3.1
 %{?buildrequires_jdk}
 BuildRequires:	lcms2-devel >= 2.11
 BuildRequires:	libjpeg-devel
@@ -257,6 +257,7 @@ Summary(pl.UTF-8):	OpenJDK - środowisko uruchomieniowe - obsługa fontów
 Group:		Development/Languages/Java
 Requires:	%{name}-jre-base = %{version}-%{release}
 Requires:	freetype >= 1:2.10.2
+Requires:	harfbuzz >= 2.3.1
 
 %description jre-base-freetype
 Font handling library for OpenJDK runtime environment built using free
@@ -341,10 +342,9 @@ Code examples for OpenJDK.
 Przykłady dla OpenJDK.
 
 %prep
-%setup -qn jdk12u-jdk-%{version}-ga
+%setup -qn jdk13u-jdk-%{version}-ga
 
 %patch0 -p1
-%patch1 -p1
 
 %build
 # Make sure we have /proc mounted - otherwise idlc will fail later.
@@ -370,8 +370,8 @@ chmod a+x configure
 %configure \
 	%{?with_zero:--with-jvm-variants=zero} \
 	--with-boot-jdk="%{java_home}" \
-	--with-extra-cflags="%{rpmcppflags} %{rpmcflags} -fcommon -O0" \
-	--with-extra-cxxflags="%{rpmcppflags} %{rpmcxxflags} -fcommon -O0" \
+	--with-extra-cflags="%{rpmcppflags} %{rpmcflags} -fcommon" \
+	--with-extra-cxxflags="%{rpmcppflags} %{rpmcxxflags} -fcommon" \
 	--with-extra-ldflags="%{rpmldflags}" \
 	--with-jni-libpath="%{_libdir}/java %{_libdir} /%{_lib}" \
 	--with-jvm-features="%{?with_shenandoahgc:shenandoahgc}" \
@@ -383,6 +383,7 @@ chmod a+x configure
 	--with-jobs="%{__jobs}" \
 	--with-freetype=system \
 	--with-giflib=system \
+	--with-harfbuzz=system \
 	--with-libjpeg=system \
 	--with-libpng=system \
 	--with-lcms=system \
@@ -485,6 +486,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/rmic
 %attr(755,root,root) %{_bindir}/serialver
 %{_jvmdir}/java
+%{?with_aot:%{_mandir}/man1/jaotc.1*}
 %{_mandir}/man1/jarsigner.1*
 %{_mandir}/man1/javac.1*
 %{_mandir}/man1/javadoc.1*
@@ -492,10 +494,15 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/jcmd.1*
 %{_mandir}/man1/jconsole.1*
 %{_mandir}/man1/jdb.1*
+%{_mandir}/man1/jdeprscan.1*
 %{_mandir}/man1/jdeps.1*
+%{!?with_zero:%{_mandir}/man1/jhsdb.1*}
 %{_mandir}/man1/jinfo.1*
+%{_mandir}/man1/jlink.1*
 %{_mandir}/man1/jmap.1*
+%{_mandir}/man1/jmod.1*
 %{_mandir}/man1/jps.1*
+%{_mandir}/man1/jshell.1*
 %{_mandir}/man1/jstack.1*
 %{_mandir}/man1/jstat.1*
 %{_mandir}/man1/jstatd.1*
@@ -545,6 +552,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/rmiregistry
 %attr(755,root,root) %{_bindir}/unpack200
 %{_mandir}/man1/java.1*
+%{_mandir}/man1/jfr.1*
 %{_mandir}/man1/jjs.1*
 %{_mandir}/man1/jrunscript.1*
 %{_mandir}/man1/keytool.1*
@@ -578,7 +586,6 @@ rm -rf $RPM_BUILD_ROOT
 %{dstdir}/lib/security
 %dir %{dstdir}/lib/server
 %attr(755,root,root) %{dstdir}/lib/server/*.so
-%{dstdir}/lib/server/Xusage.txt
 %{dstdir}/lib/server/classes.jsa
 %{!?with_zero:%{dstdir}/lib/classlist}
 %{dstdir}/lib/jrt-fs.jar
