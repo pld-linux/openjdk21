@@ -33,6 +33,7 @@ Source0:	https://github.com/openjdk/jdk17u/archive/jdk-%{version}-ga/%{name}-%{v
 # Source0-md5:	94344312ee396394964f51933936f7aa
 Source10:	make-cacerts.sh
 Patch0:		no_optflags.patch
+Patch1:		x32.patch
 URL:		http://openjdk.java.net/
 BuildRequires:	/usr/bin/jar
 BuildRequires:	alsa-lib-devel
@@ -345,6 +346,7 @@ Przykłady dla OpenJDK.
 %setup -qn jdk17u-jdk-%{version}-ga
 
 %patch0 -p1
+%patch1 -p1
 
 %build
 # Make sure we have /proc mounted - otherwise idlc will fail later.
