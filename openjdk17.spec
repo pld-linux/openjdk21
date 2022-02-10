@@ -43,6 +43,7 @@ BuildRequires:	bash
 %{?with_cacerts:BuildRequires:	ca-certificates-update}
 BuildRequires:	cups-devel
 BuildRequires:	elfutils-devel
+BuildRequires:	fontconfig-devel
 BuildRequires:	freetype-devel >= 1:2.10.2
 BuildRequires:	gawk
 BuildRequires:	giflib-devel >= 5.2.1
@@ -60,8 +61,10 @@ BuildRequires:	rpmbuild(macros) >= 1.752
 BuildRequires:	unzip
 BuildRequires:	util-linux
 BuildRequires:	xorg-lib-libX11-devel
+BuildRequires:	xorg-lib-libXext-devel
 BuildRequires:	xorg-lib-libXinerama-devel
 BuildRequires:	xorg-lib-libXp-devel
+BuildRequires:	xorg-lib-libXrandr-devel
 BuildRequires:	xorg-lib-libXrender-devel
 BuildRequires:	xorg-lib-libXt-devel
 BuildRequires:	xorg-lib-libXtst-devel
