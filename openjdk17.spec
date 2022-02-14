@@ -15,6 +15,10 @@
 %define		with_shenandoahgc	1
 %endif
 
+%ifarch %{x8664}
+%define		with_svml	1
+%endif
+
 # class data version seen with file(1) that this jvm is able to load
 %define		_classdataversion 61.0
 
@@ -585,7 +589,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{dstdir}/lib/libjava.so
 %attr(755,root,root) %{dstdir}/lib/libjimage.so
 %attr(755,root,root) %{dstdir}/lib/libjli.so
-%attr(755,root,root) %{dstdir}/lib/libjsvml.so
+%{?with_svml:%attr(755,root,root) %{dstdir}/lib/libjsvml.so}
 %attr(755,root,root) %{dstdir}/lib/liblcms.so
 %attr(755,root,root) %{dstdir}/lib/libmanagement_agent.so
 %attr(755,root,root) %{dstdir}/lib/libmanagement_ext.so
