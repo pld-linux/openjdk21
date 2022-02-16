@@ -578,7 +578,9 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{dstdir}/lib/server/*.so
 %if %{without zero}
 %{dstdir}/lib/server/classes.jsa
+%ifarch aarch64 %{x8664}
 %{dstdir}/lib/server/classes_nocoops.jsa
+%endif
 %{dstdir}/lib/classlist
 %endif
 %{dstdir}/lib/jrt-fs.jar
