@@ -25,12 +25,12 @@
 Summary:	Open-source implementation of the Java Platform, Standard Edition
 Summary(pl.UTF-8):	Wolnoźródłowa implementacja Java 17 SE
 Name:		openjdk17
-Version:	17.0.4
+Version:	17.0.4.1
 Release:	1
 License:	GPL v2
 Group:		Development/Languages/Java
 Source0:	https://github.com/openjdk/jdk17u/archive/jdk-%{version}-ga/%{name}-%{version}.tar.gz
-# Source0-md5:	474378667493994c560430b64d47143a
+# Source0-md5:	b5c889c7e126f4595323a59f5149ec8a
 Source10:	make-cacerts.sh
 Patch0:		no_optflags.patch
 Patch1:		x32.patch
