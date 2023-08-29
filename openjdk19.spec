@@ -2,9 +2,9 @@
 %bcond_without	cacerts		# don't include the default CA certificates
 
 %if %{with bootstrap}
-%define		use_jdk	openjdk17
-%else
 %define		use_jdk	openjdk18
+%else
+%define		use_jdk	openjdk19
 %endif
 
 %ifarch x32
@@ -20,17 +20,17 @@
 %endif
 
 # class data version seen with file(1) that this jvm is able to load
-%define		_classdataversion 62.0
+%define		_classdataversion 63.0
 
 Summary:	Open-source implementation of the Java Platform, Standard Edition
-Summary(pl.UTF-8):	Wolnoźródłowa implementacja Java 18 SE
-Name:		openjdk18
-Version:	18.0.2.1
+Summary(pl.UTF-8):	Wolnoźródłowa implementacja Java 19 SE
+Name:		openjdk19
+Version:	19.0.2
 Release:	1
 License:	GPL v2
 Group:		Development/Languages/Java
-Source0:	https://github.com/openjdk/jdk18u/archive/jdk-%{version}-ga/%{name}-%{version}.tar.gz
-# Source0-md5:	cacd82db752d43f95a6dab79ba724f80
+Source0:	https://github.com/openjdk/jdk19u/archive/jdk-%{version}-ga/%{name}-%{version}.tar.gz
+# Source0-md5:	2c5489f4830bce40240dc4f76f890156
 Source10:	make-cacerts.sh
 Patch0:		no_optflags.patch
 Patch1:		x32.patch
@@ -346,7 +346,7 @@ Code examples for OpenJDK.
 Przykłady dla OpenJDK.
 
 %prep
-%setup -qn jdk18u-jdk-%{version}-ga
+%setup -qn jdk19u-jdk-%{version}-ga
 
 %patch0 -p1
 %patch1 -p1
@@ -383,7 +383,6 @@ chmod a+x configure
 	--with-native-debug-symbols=none \
 	--disable-full-docs \
 	--disable-javac-server \
-	--disable-hotspot-gtest \
 	--disable-warnings-as-errors \
 	--with-jobs="%{__jobs}" \
 	--with-freetype=system \
