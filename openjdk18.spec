@@ -2,9 +2,9 @@
 %bcond_without	cacerts		# don't include the default CA certificates
 
 %if %{with bootstrap}
-%define		use_jdk	openjdk16
-%else
 %define		use_jdk	openjdk17
+%else
+%define		use_jdk	openjdk18
 %endif
 
 %ifarch x32
@@ -20,17 +20,17 @@
 %endif
 
 # class data version seen with file(1) that this jvm is able to load
-%define		_classdataversion 61.0
+%define		_classdataversion 62.0
 
 Summary:	Open-source implementation of the Java Platform, Standard Edition
-Summary(pl.UTF-8):	Wolnoźródłowa implementacja Java 17 SE
-Name:		openjdk17
-Version:	17.0.8.1
+Summary(pl.UTF-8):	Wolnoźródłowa implementacja Java 18 SE
+Name:		openjdk18
+Version:	18.0.2.1
 Release:	1
 License:	GPL v2
 Group:		Development/Languages/Java
-Source0:	https://github.com/openjdk/jdk17u/archive/jdk-%{version}-ga/%{name}-%{version}.tar.gz
-# Source0-md5:	5723a32dd7549c5585ba9912bbaf6e4e
+Source0:	https://github.com/openjdk/jdk18u/archive/jdk-%{version}-ga/%{name}-%{version}.tar.gz
+# Source0-md5:	cacd82db752d43f95a6dab79ba724f80
 Source10:	make-cacerts.sh
 Patch0:		no_optflags.patch
 Patch1:		x32.patch
@@ -346,7 +346,7 @@ Code examples for OpenJDK.
 Przykłady dla OpenJDK.
 
 %prep
-%setup -qn jdk17u-jdk-%{version}-ga
+%setup -qn jdk18u-jdk-%{version}-ga
 
 %patch0 -p1
 %patch1 -p1
@@ -488,6 +488,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/jstack
 %attr(755,root,root) %{_bindir}/jstat
 %attr(755,root,root) %{_bindir}/jstatd
+%attr(755,root,root) %{_bindir}/jwebserver
 %attr(755,root,root) %{_bindir}/serialver
 %{_jvmdir}/java
 %{_mandir}/man1/jarsigner.1*
@@ -510,6 +511,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/jstack.1*
 %{_mandir}/man1/jstat.1*
 %{_mandir}/man1/jstatd.1*
+%{_mandir}/man1/jwebserver.1*
 %{_mandir}/man1/serialver.1*
 
 %files jdk-base
@@ -538,6 +540,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{dstdir}/bin/jstack
 %attr(755,root,root) %{dstdir}/bin/jstat
 %attr(755,root,root) %{dstdir}/bin/jstatd
+%attr(755,root,root) %{dstdir}/bin/jwebserver
 %attr(755,root,root) %{dstdir}/bin/serialver
 %{dstdir}/include
 %{dstdir}/lib/ct.sym
