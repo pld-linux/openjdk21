@@ -2,9 +2,9 @@
 %bcond_without	cacerts		# don't include the default CA certificates
 
 %if %{with bootstrap}
-%define		use_jdk	openjdk18
-%else
 %define		use_jdk	openjdk19
+%else
+%define		use_jdk	openjdk20
 %endif
 
 %ifarch x32
@@ -20,17 +20,17 @@
 %endif
 
 # class data version seen with file(1) that this jvm is able to load
-%define		_classdataversion 63.0
+%define		_classdataversion 64.0
 
 Summary:	Open-source implementation of the Java Platform, Standard Edition
-Summary(pl.UTF-8):	Wolnoźródłowa implementacja Java 19 SE
-Name:		openjdk19
-Version:	19.0.2
+Summary(pl.UTF-8):	Wolnoźródłowa implementacja Java 20 SE
+Name:		openjdk20
+Version:	20.0.2
 Release:	1
 License:	GPL v2
 Group:		Development/Languages/Java
-Source0:	https://github.com/openjdk/jdk19u/archive/jdk-%{version}-ga/%{name}-%{version}.tar.gz
-# Source0-md5:	2c5489f4830bce40240dc4f76f890156
+Source0:	https://github.com/openjdk/jdk20u/archive/jdk-%{version}-ga/%{name}-%{version}.tar.gz
+# Source0-md5:	0a6c990bd0a4eee6eee06e89b74cde19
 Source10:	make-cacerts.sh
 Patch0:		no_optflags.patch
 Patch1:		x32.patch
@@ -346,7 +346,7 @@ Code examples for OpenJDK.
 Przykłady dla OpenJDK.
 
 %prep
-%setup -qn jdk19u-jdk-%{version}-ga
+%setup -qn jdk20u-jdk-%{version}-ga
 
 %patch0 -p1
 %patch1 -p1

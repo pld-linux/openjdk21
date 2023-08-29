@@ -1,14 +1,15 @@
 --- jdk17u-jdk-17.0.2-ga/make/common/NativeCompilation.gmk.orig	2021-12-07 19:03:22.000000000 +0100
 +++ jdk17u-jdk-17.0.2-ga/make/common/NativeCompilation.gmk	2022-02-09 13:29:15.184653743 +0100
-@@ -347,12 +347,12 @@
-     ifneq ($$(filter %.c, $$($1_FILENAME)), )
+@@ -347,13 +347,13 @@
        # Compile as a C file
+       $1_CFLAGS += $$($1_WARNINGS_FLAGS)
        $1_FLAGS := $(CFLAGS_CCACHE) $$($1_USE_PCH_FLAGS) $$($1_BASE_CFLAGS) \
 -          $$($1_OPT_CFLAGS) $$($1_CFLAGS) -c
 +          $$($1_CFLAGS) -c
        $1_COMPILER := $$($$($1_BASE)_CC)
      else ifneq ($$(filter %.m, $$($1_FILENAME)), )
        # Compile as an Objective-C file
+       $1_CFLAGS += $$($1_WARNINGS_FLAGS)
        $1_FLAGS := -x objective-c $(CFLAGS_CCACHE) $$($1_USE_PCH_FLAGS) \
 -          $$($1_BASE_CFLAGS) $$($1_OPT_CFLAGS) $$($1_CFLAGS) -c
 +          $$($1_BASE_CFLAGS) $$($1_CFLAGS) -c
@@ -16,8 +17,8 @@
      else ifneq ($$(filter %.S, $$($1_FILENAME)), )
        # Compile as preprocessed assembler file
 @@ -361,7 +361,7 @@
-     else ifneq ($$(filter %.cpp %.cc %.mm, $$($1_FILENAME)), )
        # Compile as a C++ or Objective-C++ file
+       $1_CXXFLAGS += $$($1_WARNINGS_FLAGS)
        $1_FLAGS := $(CFLAGS_CCACHE) $$($1_USE_PCH_FLAGS) $$($1_BASE_CXXFLAGS) \
 -          $$($1_OPT_CXXFLAGS) $$($1_CXXFLAGS) -c
 +          $$($1_CXXFLAGS) -c
