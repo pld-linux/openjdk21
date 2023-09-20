@@ -103,6 +103,12 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define		dstdir		%{_jvmdir}/%{dstreldir}
 %define		jvmjardir	%{_jvmjardir}/%{name}-%{version}
 
+%if %{with zero}
+%define		jvm_type	zero
+%else
+%define		jvm_type	server
+%endif
+
 # to break artificial subpackage dependency loops
 %define		_noautoreq	'libmawt.so' java\\\\(ClassDataVersion\\\\)
 
@@ -373,7 +379,7 @@ chmod a+x configure
 
 # disable-debug-symbols so openjdk debuginfo handling won't conflict with ours
 %configure \
-	%{?with_zero:--with-jvm-variants=zero} \
+	--with-jvm-variants=%{jvm_type} \
 	--with-boot-jdk="%{java_home}" \
 	--with-extra-cflags="%{rpmcppflags} %{rpmcflags}" \
 	--with-extra-cxxflags="%{rpmcppflags} %{rpmcxxflags}" \
@@ -576,12 +582,12 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{dstdir}/lib/jfr
 %{dstdir}/lib/jfr/*.jfc
 %{dstdir}/lib/security
-%dir %{dstdir}/lib/server
-%attr(755,root,root) %{dstdir}/lib/server/*.so
+%dir %{dstdir}/lib/%{jvm_type}
+%attr(755,root,root) %{dstdir}/lib/%{jvm_type}/*.so
 %if %{without zero}
-%{dstdir}/lib/server/classes.jsa
+%{dstdir}/lib/%{jvm_type}/classes.jsa
 %ifarch aarch64 %{x8664}
-%{dstdir}/lib/server/classes_nocoops.jsa
+%{dstdir}/lib/%{jvm_type}/classes_nocoops.jsa
 %endif
 %{dstdir}/lib/classlist
 %endif
