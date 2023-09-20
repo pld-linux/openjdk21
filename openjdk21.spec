@@ -2,9 +2,9 @@
 %bcond_without	cacerts		# don't include the default CA certificates
 
 %if %{with bootstrap}
-%define		use_jdk	openjdk19
-%else
 %define		use_jdk	openjdk20
+%else
+%define		use_jdk	openjdk21
 %endif
 
 %ifarch x32
@@ -20,17 +20,17 @@
 %endif
 
 # class data version seen with file(1) that this jvm is able to load
-%define		_classdataversion 64.0
+%define		_classdataversion 65.0
 
 Summary:	Open-source implementation of the Java Platform, Standard Edition
-Summary(pl.UTF-8):	Wolnoźródłowa implementacja Java 20 SE
-Name:		openjdk20
-Version:	20.0.2
+Summary(pl.UTF-8):	Wolnoźródłowa implementacja Java 21 SE
+Name:		openjdk21
+Version:	21
 Release:	1
 License:	GPL v2
 Group:		Development/Languages/Java
-Source0:	https://github.com/openjdk/jdk20u/archive/jdk-%{version}-ga/%{name}-%{version}.tar.gz
-# Source0-md5:	0a6c990bd0a4eee6eee06e89b74cde19
+Source0:	https://github.com/openjdk/jdk21u/archive/jdk-%{version}-ga/%{name}-%{version}.tar.gz
+# Source0-md5:	064572e41dd0a0d2279ad94c3139a684
 Source10:	make-cacerts.sh
 Patch0:		no_optflags.patch
 Patch1:		x32.patch
@@ -346,7 +346,7 @@ Code examples for OpenJDK.
 Przykłady dla OpenJDK.
 
 %prep
-%setup -qn jdk20u-jdk-%{version}-ga
+%setup -qn jdk21u-jdk-%{version}-ga
 
 %patch0 -p1
 %patch1 -p1
@@ -445,7 +445,7 @@ rmdir $RPM_BUILD_ROOT%{dstdir}/man
 # replace duplicates with symlinks, link to %{_bindir}
 for path in $RPM_BUILD_ROOT%{dstdir}/bin/*; do
 	filename=$(basename $path)
-        ln -sf "%{dstdir}/bin/$filename" $RPM_BUILD_ROOT%{_bindir}
+	ln -sf "%{dstdir}/bin/$filename" $RPM_BUILD_ROOT%{_bindir}
 done
 
 # keep configuration in %{_sysconfdir} (not all *.properties go there)
@@ -602,6 +602,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{dstdir}/lib/libjli.so
 %{?with_svml:%attr(755,root,root) %{dstdir}/lib/libjsvml.so}
 %attr(755,root,root) %{dstdir}/lib/liblcms.so
+%attr(755,root,root) %{dstdir}/lib/lible.so
 %attr(755,root,root) %{dstdir}/lib/libmanagement_agent.so
 %attr(755,root,root) %{dstdir}/lib/libmanagement_ext.so
 %attr(755,root,root) %{dstdir}/lib/libprefs.so
