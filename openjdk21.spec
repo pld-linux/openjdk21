@@ -25,12 +25,12 @@
 Summary:	Open-source implementation of the Java Platform, Standard Edition
 Summary(pl.UTF-8):	Wolnoźródłowa implementacja Java 21 SE
 Name:		openjdk21
-Version:	21
+Version:	21.0.1
 Release:	1
 License:	GPL v2
 Group:		Development/Languages/Java
 Source0:	https://github.com/openjdk/jdk21u/archive/jdk-%{version}-ga/%{name}-%{version}.tar.gz
-# Source0-md5:	064572e41dd0a0d2279ad94c3139a684
+# Source0-md5:	3c39c7d14a03b0b3d0aaaecb98ce307e
 Source10:	make-cacerts.sh
 Patch0:		no_optflags.patch
 Patch1:		x32.patch
