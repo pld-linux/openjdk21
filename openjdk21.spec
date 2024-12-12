@@ -110,7 +110,7 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %endif
 
 # to break artificial subpackage dependency loops
-%define		_noautoreq	'libmawt.so' java\\\\(ClassDataVersion\\\\)
+%define		_noautoreq	libjli.so 'libmawt.so' java\\\\(ClassDataVersion\\\\)
 
 # openjdk build system handles _FORTIFY_SOURCE internally
 %undefine	_fortify_cflags
