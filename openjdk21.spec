@@ -342,8 +342,8 @@ Przykłady dla OpenJDK.
 %prep
 %setup -qn jdk21u-jdk-%{version}-ga
 
-%patch0 -p1
-%patch1 -p1
+%patch -P0 -p1
+%patch -P1 -p1
 
 %build
 # Make sure we have /proc mounted - otherwise idlc will fail later.
