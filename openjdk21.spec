@@ -36,7 +36,6 @@ Patch0:		no_optflags.patch
 Patch1:		x32.patch
 URL:		http://openjdk.java.net/
 BuildRequires:	alsa-lib-devel
-BuildRequires:	ant
 BuildRequires:	autoconf
 BuildRequires:	bash
 %{?with_cacerts:BuildRequires:	ca-certificates-update}
