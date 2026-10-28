@@ -25,12 +25,12 @@
 Summary:	Open-source implementation of the Java Platform, Standard Edition
 Summary(pl.UTF-8):	Wolnoźródłowa implementacja Java 21 SE
 Name:		openjdk21
-Version:	21.0.12
+Version:	21.0.13.0.3
 Release:	1
 License:	GPL v2
 Group:		Development/Languages/Java
 Source0:	https://github.com/openjdk/jdk21u/archive/jdk-%{version}-ga/%{name}-%{version}.tar.gz
-# Source0-md5:	269f8fa18a3eb429af4720d0c7054d2a
+# Source0-md5:	d272136bbb06950863bf537cf0a95416
 Source10:	make-cacerts.sh
 Patch0:		no_optflags.patch
 Patch1:		x32.patch
@@ -38,7 +38,8 @@ URL:		http://openjdk.java.net/
 BuildRequires:	alsa-lib-devel
 BuildRequires:	autoconf
 BuildRequires:	bash
-%{?with_cacerts:BuildRequires:	ca-certificates-update}
+# cacerts is generated from it; 20260816-1 drops the compromised eMudhra roots (CVE-2026-91403)
+%{?with_cacerts:BuildRequires:	ca-certificates-update >= 20260816-1}
 BuildRequires:	cups-devel
 BuildRequires:	elfutils-devel
 BuildRequires:	fontconfig-devel
